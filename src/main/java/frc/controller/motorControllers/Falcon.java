@@ -10,7 +10,7 @@ import frc.controller.MotorController;
 
 public class Falcon implements MotorController {
 
-    private WPI_TalonFX talon; m
+    private WPI_TalonFX talon; 
 
     public Falcon(int canID) {
         talon = new WPI_TalonFX(canID);
@@ -30,12 +30,12 @@ public class Falcon implements MotorController {
     }
 
     //Not needed for swerve, maybe needed for other systems
-    /*public void follow(MotorController baseController, boolean invert) { 
+    public void follow(MotorController baseController, boolean invert) { 
         //this.talon.follow(((Falcon)baseController).getMotorController(), invert);
-        this.talon.follow(baseController);
-        this.talon.setInverted(InvertType.FollowMaster);
+        //this.talon.follow(baseController);
+        //this.talon.setInverted(InvertType.FollowMaster);
 
-    }*/
+    }
 
     public void setCurrentLimit(boolean limitEnabled, int limit, int triggerThreshold, int triggerTime){
         talon.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 10, 15, 0.5));

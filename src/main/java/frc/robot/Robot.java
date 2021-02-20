@@ -12,10 +12,12 @@ import frc.controller.*;
 import frc.singularityDrive.*;
 import frc.controller.controlSchemes.ArcadeDrive;
 import frc.controller.controlSchemes.SmartArcadeDrive;
+import frc.controller.motorControllers.Falcon;
 import frc.controller.autonomous.*;
 //import frc.controller.controlSchemes.Test;
 import frc.robot.Canifier;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.*;
 
 import edu.wpi.first.wpilibj.Compressor;
@@ -110,26 +112,30 @@ public class Robot extends TimedRobot {
     //colorSensor = new ColorSensor(colorSpinner, colorSol1, colorSol2);
     
     //initialize all mechanisms on the robot
-    smartDrive = new SmartBasicDrive(driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3);
-    drive = new BasicDrive(driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3);
+    //smartDrive = new SmartBasicDrive(driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3);
+
+    Falcon talon = new Falcon(3);
+    talon.setSpeed(10);
+
+    //drive = new BasicDrive(driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3);
     // ^^^^^^^ change this to SmartBasicDrive if using SmartDrive
-    drivePneumatics = new DrivePneumatics(drivePneu1, drivePneu2);
-    flywheel = new Flywheel(flywheelMotor1, flywheelMotor2, flywheelMotor3);
-    conveyor = new Conveyor(conveyorMotor1);
+    //drivePneumatics = new DrivePneumatics(drivePneu1, drivePneu2);
+    //flywheel = new Flywheel(flywheelMotor1, flywheelMotor2, flywheelMotor3);
+    //conveyor = new Conveyor(conveyorMotor1);
 
 
 
-    climber = new Climber(downMotorPort,0,0);//TODO THE LAST TWO NUNMBERS AREN'T CORRECT
+    //climber = new Climber(downMotorPort,0,0);//TODO THE LAST TWO NUNMBERS AREN'T CORRECT
 
     
-    limeLight = new LimeLight();
+    //limeLight = new LimeLight();
     //limeLight.setCamMode(limeLight, 0.0);
     //DO NOT REMOVE PLZ - starts collecting data from drive cameras
     //start collecting data from drive cameras
     // This is not used if the raspberry pi is being used for image compression
     //CameraServer.getInstance().startAutomaticCapture();
 
-    gyro = new AHRS(SPI.Port.kMXP);
+    //gyro = new AHRS(SPI.Port.kMXP);
     //gyroResetAtTeleop = true;
 
     //tutorial code for the sendableChooser in case it breaks
@@ -170,7 +176,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
-    compressor.start();
+    //compressor.start();
+
 
   }
 

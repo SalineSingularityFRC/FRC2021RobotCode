@@ -60,8 +60,9 @@ public class SwerveDrive  {
 
     
 
-    private static double getAngleIfStill(double xNext, double yNext, double xCurr, double yCurr, double height, double width, double angleAdd, double localToGlobal){
-        if(xNext == xCurr && yNext == yCurr){ //check to see if robot is stationary
+    private static double getAngleIfStill(double horizontal, double vertical, double xNext, double yNext, double xCurr, double yCurr, double height, double width, double angleAdd, double localToGlobal){
+        if(horizontal <= .001 && vertical <= .001){ //check to see if robot is stationary
+                //System.out.println(Math.toDegrees(Math.atan(width / height)) + angleAdd);
             return Math.toDegrees(Math.atan(width / height)) + angleAdd;
         }
         else{ //if the robot isn't stationary
@@ -86,8 +87,8 @@ public class SwerveDrive  {
     }
     
 
-    private static double getDistanceIfStill(double xNext, double yNext, double xCurr, double yCurr, double rotationSpeed ){
-        if(xNext == xCurr && yNext == yCurr){
+    private static double getDistanceIfStill(double horizontal, double vertical, double xNext, double yNext, double xCurr, double yCurr, double rotationSpeed ){
+        if(horizontal <= .001 && vertical <= .001){ //if they're basically zero
                 return rotationSpeed;
         }
         else{
@@ -115,8 +116,8 @@ public class SwerveDrive  {
             double normalSpeedConstant, double fastSpeedCostant, double rotationSpeedConstant) {
         double size = 1.0;
 
-        double robotWidth = 18;
-        double robotHeight = 16.5;
+        double robotWidth = 1;
+        double robotHeight = 1;
 
         double halfRobotWidth = robotWidth / 2;
         double halfRobotHeight = robotHeight / 2;
@@ -159,34 +160,34 @@ public class SwerveDrive  {
                 + (midToOutSize * Math.sin(-(rotation * rotationSpeedConstant) - mBL_Offset_Angle));
 
         double mBR_XPos_Next = horizontal
-                + (midToOutSize * Math.cos(-(rotation * rotationSpeedConstant) - mBR_Offset_Angle));
+                + (midToOutSize * Math.cos(-(rotation * rotationSpeedConstant) - mBR_Offset_Angle)); 
         double mBR_YPos_Next = vertical
                 + (midToOutSize * Math.sin(-(rotation * rotationSpeedConstant) - mBR_Offset_Angle));
 
         // Angle adjusting motors will set the wheels to be pointed to the angle of
         // these slopes:
-        double mFL_Angle = getAngleIfStill(horizontal, vertical, 0, 0, robotWidth, robotHeight, 180, 0);
-        double mFR_Angle = getAngleIfStill(horizontal, vertical, 0, 0, robotHeight, robotWidth, 90, 0);
-        double mBL_Angle = getAngleIfStill(horizontal, vertical, 0, 0, robotHeight, robotWidth, 270, 0);
-        double mBR_Angle = getAngleIfStill(horizontal, vertical, 0, 0, robotWidth, robotHeight, 0, 0);
+        double mFR_Angle = getAngleIfStill(horizontal, vertical, mFR_XPos_Next, mFR_YPos_Next, -mFR_XPos_Curr, -mFR_XPos_Curr, robotHeight, robotWidth, 90, gyroRotation);
+        double mFL_Angle = getAngleIfStill(horizontal, vertical, mFL_XPos_Next, mFL_YPos_Next, mFL_XPos_Curr, mFL_XPos_Curr, robotWidth, robotHeight, 180, gyroRotation);
+        double mBL_Angle = getAngleIfStill(horizontal, vertical, mBL_XPos_Next, mBL_YPos_Next, -mBL_XPos_Curr, -mBL_XPos_Curr, robotHeight, robotWidth, 270, gyroRotation);
+        double mBR_Angle = getAngleIfStill(horizontal, vertical, mBR_XPos_Next, mBR_YPos_Next, mBR_XPos_Curr, mBR_XPos_Curr, robotWidth, robotHeight, 0, gyroRotation);
 
-        double mFR_Distance = getDistanceIfStill(mFR_XPos_Curr, mFR_YPos_Curr, mFR_XPos_Next, mFR_YPos_Next, 1);
-        double mFL_Distance = getDistanceIfStill(mFL_XPos_Curr, mFL_YPos_Curr, mFL_XPos_Next, mFL_YPos_Next, 1);
-        double mBL_Distance = getDistanceIfStill(mBL_XPos_Curr, mBL_YPos_Curr, mBL_XPos_Next, mBL_YPos_Next, 1);
-        double mBR_Distance = getDistanceIfStill(mBR_XPos_Curr, mBR_YPos_Curr, mBR_XPos_Next, mBR_YPos_Next, 1);
+        double mFR_Distance = getDistanceIfStill(horizontal, vertical,  mFR_XPos_Next, mFR_YPos_Next, mFR_XPos_Curr, mFR_YPos_Curr, rotation);
+        double mFL_Distance = getDistanceIfStill(horizontal, vertical,  mFL_XPos_Next, mFL_YPos_Next, mFL_XPos_Curr, mFL_YPos_Curr, rotation);
+        double mBL_Distance = getDistanceIfStill(horizontal, vertical,  mBL_XPos_Next, mBL_YPos_Next, mBL_XPos_Curr, mBL_YPos_Curr, rotation);
+        double mBR_Distance = getDistanceIfStill(horizontal, vertical,  mBR_XPos_Next, mBR_YPos_Next, mBR_XPos_Curr, mBR_YPos_Curr, rotation);
 
+        System.out.printf(String.format("%.3f %n", mFR_Angle));
         System.out.printf(String.format("%.3f %n", mFL_Angle));
         System.out.printf(String.format("%.3f %n", mBL_Angle));
-        System.out.printf(String.format("%.3f %n", mBL_Angle));
-        System.out.printf(String.format("%.3f %n %n", mFR_Angle));
+        System.out.printf(String.format("%.3f %n %n", mBR_Angle));
 
         // System.out.printf(String.format("Value with 3 digits after decimal point %.3f
         // %n", PI)); // OUTPUTS: Value with 3 digits after decimal point 3.142
 
-        System.out.printf(String.format("%.3f %n", mFL_Distance));
         System.out.printf(String.format("%.3f %n", mFR_Distance));
+        System.out.printf(String.format("%.3f %n", mFL_Distance));
         System.out.printf(String.format("%.3f %n", mBL_Distance));
-        System.out.printf(String.format("%.3f %n %n", mBL_Distance));
+        System.out.printf(String.format("%.3f %n %n", mBR_Distance));
 
         // System.out.printf(String.format("%.3f %n" , mFL_XPos_Next));
         // System.out.printf(String.format("%.3f %n" , mFL_YPos_Next));
@@ -212,11 +213,11 @@ public class SwerveDrive  {
 
     public static void main(String[] args) {
         // SwerveDrive sDrive = new SwerveDrive(1, 1, 0.7853982, 1, 1, 1, 1);
-        SwerveDrive sDrive = new SwerveDrive(1, 1, .5, .5, 1, 1, 1, 1);
+        SwerveDrive sDrive = new SwerveDrive(0, 1, 0, 0, 1, 1, 1, 1);
 
         System.out.println("/n/n/n/n");
-        System.out.println(gyroWheelCompensate(10, -5));
-        System.out.println(gyroWheelCompensate(-15, 45));
+        //System.out.println(gyroWheelCompensate(10, -5));
+        //System.out.println(gyroWheelCompensate(-15, 45));
 
     }
 
