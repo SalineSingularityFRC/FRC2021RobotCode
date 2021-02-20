@@ -111,7 +111,7 @@ public class SwerveDrive  {
      * 
      */
 
-    public SwerveDrive(double vertical, double horizontal, double rotation, double slowSpeedConstant,
+    public SwerveDrive(double vertical, double horizontal, double rotation, double gyroRotation, double slowSpeedConstant,
             double normalSpeedConstant, double fastSpeedCostant, double rotationSpeedConstant) {
         double size = 1.0;
 
@@ -122,25 +122,26 @@ public class SwerveDrive  {
         double halfRobotHeight = robotHeight / 2;
 
         double midToOutSize = distance(halfRobotWidth, halfRobotHeight, 0, 0); // distance between robot center and any
-                                                                               // of the wheels
-
-        double mFL_XPos_Curr = -halfRobotWidth;
-        double mFL_YPos_Curr = halfRobotHeight;
-
-        double mFR_XPos_Curr = halfRobotWidth;
-        double mFR_YPos_Curr = halfRobotHeight;
-
-        double mBL_XPos_Curr = -halfRobotWidth;
-        double mBL_YPos_Curr = -halfRobotHeight;
-
-        double mBR_XPos_Curr = halfRobotWidth;
-        double mBR_YPos_Curr = -halfRobotHeight;
-
+                                          
         double mBR_Offset_Angle = Math.atan(robotHeight / robotWidth); // Angle for offsetting wheel positions along the
-                                                                       // circle with radius midToOutSize
+        // circle with radius midToOutSize
         double mFR_Offset_Angle = -mBR_Offset_Angle; // " " but negative
         double mFL_Offset_Angle = mBR_Offset_Angle + Math.PI; // complement ( +180 degrees ) of the first one
-        double mBL_Offset_Angle = mFR_Offset_Angle + Math.PI; // same thing, but of the second one
+        double mBL_Offset_Angle = mFR_Offset_Angle + Math.PI; // same thing, but of the second one// of the wheels
+
+        double mFL_XPos_Curr = (midToOutSize * Math.cos(-(gyroRotation) - mFL_Offset_Angle));
+        double mFL_YPos_Curr = (midToOutSize * Math.sin(-(gyroRotation) - mFL_Offset_Angle));
+                                                                       
+        double mFR_XPos_Curr = (midToOutSize * Math.cos(-(gyroRotation) - mFR_Offset_Angle));
+        double mFR_YPos_Curr = (midToOutSize * Math.sin(-(gyroRotation) - mFR_Offset_Angle));
+                                                                       
+        double mBL_XPos_Curr = (midToOutSize * Math.cos(-(gyroRotation) - mBL_Offset_Angle));
+        double mBL_YPos_Curr = (midToOutSize * Math.sin(-(gyroRotation) - mBL_Offset_Angle));
+                                                                       
+        double mBR_XPos_Curr = (midToOutSize * Math.cos(-(gyroRotation) - mBR_Offset_Angle));
+        double mBR_YPos_Curr = (midToOutSize * Math.sin(-(gyroRotation) - mBR_Offset_Angle));
+
+
 
         double mFL_XPos_Next = horizontal
                 + (midToOutSize * Math.cos(-(rotation * rotationSpeedConstant) - mFL_Offset_Angle));
@@ -211,7 +212,7 @@ public class SwerveDrive  {
 
     public static void main(String[] args) {
         // SwerveDrive sDrive = new SwerveDrive(1, 1, 0.7853982, 1, 1, 1, 1);
-        SwerveDrive sDrive = new SwerveDrive(1, 1, .5, 1, 1, 1, 1);
+        SwerveDrive sDrive = new SwerveDrive(1, 1, .5, .5, 1, 1, 1, 1);
 
         System.out.println("/n/n/n/n");
         System.out.println(gyroWheelCompensate(10, -5));
