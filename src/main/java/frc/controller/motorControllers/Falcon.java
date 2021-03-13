@@ -18,7 +18,11 @@ public class Falcon implements MotorController {
     }
 
     public void setSpeed(double speed) { //speed will be from -1.0 to 1.0
-        this.talon.set(ControlMode.PercentOutput, speed);
+        this.talon.set(speed);
+    }
+
+    public void setPosition(double position){
+        //this.talon.set()
     }
 
     public void setRampRate(double rampRate) {

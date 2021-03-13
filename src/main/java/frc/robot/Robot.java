@@ -53,33 +53,35 @@ public class Robot extends TimedRobot {
   ControlScheme currentScheme;
 
   //Declaration of mechanisms
-  SingDrive drive;
-  SmartSingDrive smartDrive; //if we want to use smart motion, change this to SmartSingDrive
-  DrivePneumatics drivePneumatics;
-  Flywheel flywheel;
-  Conveyor conveyor;
-  Climber climber;
+  //SingDrive drive;
+  //SmartSingDrive smartDrive; //if we want to use smart motion, change this to SmartSingDrive
+  //DrivePneumatics drivePneumatics;
+  //Flywheel flywheel;
+  //Conveyor conveyor;
+  //Climber climber;
 
   //Creates an all-knowing limelight
-  LimeLight limeLight;  // or CitrusSight?
+  //LimeLight limeLight;  // or CitrusSight?
 
   //Create a CANifier
-  Canifier canifier;
+  //Canifier canifier;
 
   //Create a ColorSensor
-  ColorSensor colorSensor;
+  //ColorSensor colorSensor;
 
   //Create a gyro
-  AHRS gyro;
-  boolean gyroResetAtTeleop;
+  //AHRS gyro;
+  //boolean gyroResetAtTeleop;
 
   //Compressor compressor;
-  Compressor compressor;
+  //Compressor compressor;
+
+  Falcon talon;
 
   //SendableChoosers
-  SendableChooser<Integer> goalChooser;
-  SendableChooser<Integer> positionChooser;
-  SendableChooser<Integer> secondaryChooser;
+  //SendableChooser<Integer> goalChooser;
+  //SendableChooser<Integer> positionChooser;
+  //SendableChooser<Integer> secondaryChooser;
   
   //SendableChooser autoChooser;  
 
@@ -100,22 +102,22 @@ public class Robot extends TimedRobot {
     //initialize motor controller ports IDs
     //Uncomment to initialize motor controllers aswell - commented for texting purposes
     setDefaultProperties();
-    CameraServer.getInstance().startAutomaticCapture();
-    CameraServer.getInstance().startAutomaticCapture();
+    //CameraServer.getInstance().startAutomaticCapture();
+    //CameraServer.getInstance().startAutomaticCapture();
 
     //initialize our driving scheme to a basic arcade drive
-    currentScheme = new SmartArcadeDrive(XBOX_PORT, XBOX_PORT +1);
+    //currentScheme = new SmartArcadeDrive(XBOX_PORT, XBOX_PORT +1);
     
-    gyro = new AHRS(SPI.Port.kMXP);
-    gyroResetAtTeleop = true;
+    //gyro = new AHRS(SPI.Port.kMXP);
+    //gyroResetAtTeleop = true;
 
     //colorSensor = new ColorSensor(colorSpinner, colorSol1, colorSol2);
     
     //initialize all mechanisms on the robot
     //smartDrive = new SmartBasicDrive(driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3);
 
-    Falcon talon = new Falcon(3);
-    talon.setSpeed(10);
+    talon = new Falcon(3);
+    
 
     //drive = new BasicDrive(driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3);
     // ^^^^^^^ change this to SmartBasicDrive if using SmartDrive
@@ -145,24 +147,24 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto mode", autoChooser);*/
 
     //compressor = new Compressor();
-    goalChooser = new SendableChooser<Integer>();
-    positionChooser = new SendableChooser<Integer>();
-    secondaryChooser = new SendableChooser<Integer>();
+    //goalChooser = new SendableChooser<Integer>();
+    //positionChooser = new SendableChooser<Integer>();
+    //secondaryChooser = new SendableChooser<Integer>();
 
-    goalChooser.addDefault("Just Move",1);
-    goalChooser.addOption("Target and Trench", 0);
-    goalChooser.addOption("TestAuton", 2);
+    //goalChooser.addDefault("Just Move",1);
+    //goalChooser.addOption("Target and Trench", 0);
+    //goalChooser.addOption("TestAuton", 2);
 
-    positionChooser.addDefault("Position 1", 0);
-    positionChooser.addOption("Position 2", 1);
-    positionChooser.addOption("Position 3", 2);
+    //positionChooser.addDefault("Position 1", 0);
+    //positionChooser.addOption("Position 2", 1);
+    //positionChooser.addOption("Position 3", 2);
 
-    secondaryChooser.addDefault("Move Through Trench", 1);
-    secondaryChooser.addOption("Don't", 0);
+    //secondaryChooser.addDefault("Move Through Trench", 1);
+    //secondaryChooser.addOption("Don't", 0);
 
-    SmartDashboard.putData("Position", positionChooser);
-    SmartDashboard.putData("Primary Goal", goalChooser);
-    SmartDashboard.putData("Secondary Goal", secondaryChooser);
+    //SmartDashboard.putData("Position", positionChooser);
+    //SmartDashboard.putData("Primary Goal", goalChooser);
+    //SmartDashboard.putData("Secondary Goal", secondaryChooser);
   }
 
   /**
@@ -177,6 +179,8 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
 
     //compressor.start();
+    //Falcon talon = new Falcon(3);
+    
 
 
   }
@@ -201,7 +205,7 @@ public class Robot extends TimedRobot {
     //secondaryGoals
     //  0: Move through Trench
     //  1: Don't
-   AutonControlScheme[] goals={ new Trench1(drive, limeLight, flywheel, conveyor),
+   /*AutonControlScheme[] goals={ new Trench1(drive, limeLight, flywheel, conveyor),
                                  new Trench2(drive, limeLight, flywheel, conveyor),
                                  new Trench3(drive, limeLight, flywheel, conveyor)};
     
@@ -244,6 +248,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     //drive.setInitialPosition();
+    //Falcon talon = new Falcon(3);
+
   }
 
   /**
@@ -251,7 +257,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putNumber("Big Number Gyro Angle", gyro.getAngle());
+    //SmartDashboard.putNumber("Big Number Gyro Angle", gyro.getAngle());
+
+    
+    talon.setSpeed(100);
 
     // Allow driver control based on current schem
 /*
@@ -265,19 +274,19 @@ public class Robot extends TimedRobot {
     SmartDashboard.putString("Byte Transfered: ", byteString);
 */  
     //colorSensor.spinColorWheelColor(2);
-    currentScheme.colorSensor(colorSensor);
+    //currentScheme.colorSensor(colorSensor);
 
     //SmartDashboard.putNumber("EncoderPosition", drive.getCurrentPosition());
-    currentScheme.smartDrive(smartDrive, drivePneumatics);
+    //currentScheme.smartDrive(smartDrive, drivePneumatics);
     // partial autonomy via vision
-    currentScheme.ledMode(limeLight);
+    //currentScheme.ledMode(limeLight);
     //control other various mechanisms
-    currentScheme.limeLightDrive(limeLight, smartDrive, false);
-    currentScheme.conveyorFlywheel(conveyor, flywheel);
-    currentScheme.climber(climber);
+    //currentScheme.limeLightDrive(limeLight, smartDrive, false);
+    //currentScheme.conveyorFlywheel(conveyor, flywheel);
+    //currentScheme.climber(climber);
     
-    SmartDashboard.getNumber("EncoderPosition", smartDrive.getCurrentPosition());
-    SmartDashboard.getNumber("Gyro Position", gyro.getAngle());
+    //SmartDashboard.getNumber("EncoderPosition", smartDrive.getCurrentPosition());
+    //SmartDashboard.getNumber("Gyro Position", gyro.getAngle());
 
   }
 
@@ -286,8 +295,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    compressor.start();
-    currentScheme.climberReset(climber);
+    //compressor.start();
+    //currentScheme.climberReset(climber);
   }
 
   
