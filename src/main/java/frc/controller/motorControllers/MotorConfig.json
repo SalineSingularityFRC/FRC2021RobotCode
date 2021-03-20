@@ -102,9 +102,8 @@
             }
         ]
     },
-    "DefaultConfig": [
-        {
-            "Name": "Falcon",
+    "DefaultConfig": {
+        "Falcon": {
             "CanID": 0,
             "IsMotorInverted": false,
             "ControlMethod": "Rotations",
@@ -115,8 +114,7 @@
             },
             "Following":-1
         },
-        {
-            "Name": "Spark",
+        "Spark": {
             "CanID": 0,
             "IsMotorInverted": false,
             "ControlMethod": "Rotations",
@@ -128,5 +126,5 @@
             "Following":-1
         }
         
-    ]
+    }
 }
