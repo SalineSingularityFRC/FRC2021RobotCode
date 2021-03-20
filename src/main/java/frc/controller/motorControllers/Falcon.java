@@ -3,7 +3,9 @@ package frc.controller.motorControllers;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import frc.controller.MotorController;
@@ -17,12 +19,47 @@ public class Falcon implements MotorController {
         talon.configFactoryDefault();
     }
 
-    public void setSpeed(double speed) { //speed will be from -1.0 to 1.0
-        this.talon.set(speed);
+    public void setConfiguration(TalonFXConfiguration config){
+        talon.configAllSettings(config);
     }
 
-    public void setPosition(double position){
-        //this.talon.set()
+    public TalonFXConfiguration getConfiguration(){
+        TalonFXConfiguration tempConfig = new TalonFXConfiguration();
+        talon.getAllConfigs(tempConfig);
+        return tempConfig;
+    }
+
+
+    public TalonFXConfiguration makeFalconConfig(){
+        TalonFXConfiguration newConfig = new TalonFXConfiguration();
+        //TalonFXConfiguration
+        //newConfig.SensorInitializationStrategy = 1;
+
+
+
+        return newConfig;
+    }
+
+    
+
+    public void setSpeed(double speed) { //speed will be from -1.0 to 1.0
+        this.talon.set(TalonFXControlMode.PercentOutput, speed);
+    }
+
+    public void setVelocity(double rpm) { //speed will be from -1.0 to 1.0
+        this.talon.set(TalonFXControlMode.Velocity, rpm);
+    }
+
+    public void setRPMFromStick(double stickValue){ //stickValue will be between -1.0 and 1.0
+        double rpm = stickValue * 6380;
+        this.setVelocity(rpm);
+    }
+
+    public void setPosition(double position){ //position is measured in degrees
+        position /= 360;
+        position *= 2048; //2048 is the number of ticks of the encoder (to our best estimate, most likely true)
+        this.talon.set(TalonFXControlMode.Position, position); //position here is measured in encoder ticks
+        
     }
 
     public void setRampRate(double rampRate) {
