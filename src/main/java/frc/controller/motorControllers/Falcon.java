@@ -2,6 +2,7 @@ package frc.controller.motorControllers;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -14,9 +15,11 @@ public class Falcon implements MotorController {
 
     private WPI_TalonFX talon; 
 
-    public Falcon(int canID) {
+    public Falcon(int canID, double rampRate, boolean coast ) {
         talon = new WPI_TalonFX(canID);
         talon.configFactoryDefault();
+        setRampRate(rampRate);
+        setCoastMode(coast);
     }
 
     public void setConfiguration(TalonFXConfiguration config){
@@ -40,7 +43,9 @@ public class Falcon implements MotorController {
         return newConfig;
     }
 
-    
+    public void setInverted(InvertType invert){
+        this.talon.setInverted(invert);
+    }
 
     public void setSpeed(double speed) { //speed will be from -1.0 to 1.0
         this.talon.set(TalonFXControlMode.PercentOutput, speed);
@@ -63,11 +68,14 @@ public class Falcon implements MotorController {
     }
 
     public void setRampRate(double rampRate) {
-
+        talon.configClosedloopRamp(rampRate);
     }
 
     public void setCoastMode(boolean coast) {
-
+        if(coast)
+            talon.setNeutralMode(NeutralMode.Coast);
+        else
+            talon.setNeutralMode(NeutralMode.Brake);
     }
 
     //Not needed for swerve, maybe needed for other systems

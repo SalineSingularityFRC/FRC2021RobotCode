@@ -15,7 +15,7 @@ import frc.controller.MotorController;
 import frc.controller.motorControllers.Falcon;
 import frc.controller.motorControllers.Spark;
 import frc.controller.motorControllers.SparkBuilder;
-import jdk.vm.ci.code.CodeUtil.RefMapFormatter;
+//import jdk.vm.ci.code.CodeUtil.RefMapFormatter;
 
 public class Json {
     JSONParser parser;
@@ -64,7 +64,7 @@ public class Json {
                             (double) PID.get("kP"), (double) PID.get("kI"), (double) PID.get("kD"), 1, 1, 1, 1);
                 } 
                 else if ( ((String)Motor.get("Type")).equalsIgnoreCase("Falcon") ) {
-                    return new Falcon((int) Motor.get("CanID"));
+                    return new Falcon((int) Motor.get("CanID")); //TODO: fix alla this
                 }
 
                 
@@ -90,7 +90,7 @@ public class Json {
                     //return new Spark((int)Motor.get("CanID"), true, 1, (String)Motor.get("Name"), false, false, 
                     //    (double)PID.get("kP"), (double)PID.get("kI"), (double)PID.get("kD"), 1, 1, 1, 1);
                     SparkBuilder sb = new SparkBuilder(SparkDefault);
-                    if( Motor.get("CanID") != null ) sb.portNumber( (int)Motor.get("CanID") )
+                    if( Motor.get("CanID") != null ) sb.portNumber( (int)Motor.get("CanID") );
                     if( Motor.get("BrushlessMotor") != null ) sb.brushlessMotor( (boolean)Motor.get("BrushlessMotor") );
                     if( Motor.get("RampRate") != null ) sb.rampRate( (double)Motor.get("RampRate") );
                     if( Motor.get("Name") != null ) sb.name( (String)Motor.get("Name") );
