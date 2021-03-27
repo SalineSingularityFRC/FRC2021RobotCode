@@ -5,7 +5,8 @@
                 "Name": "FL_Angle",
                 "ControlMethod": "Angle",
                 "Type": "Falcon",
-                "CanID":1
+                "CanID":1,
+                "Coast":false
             },
             {
                 "Name": "FL_Wheel",
@@ -16,7 +17,8 @@
                 "Name": "FR_Angle",
                 "ControlMethod": "Angle",
                 "Type": "Falcon",
-                "CanID":3
+                "CanID":3,
+                "Coast":false
             },
             {
                 "Name": "FR_Wheel",
@@ -28,7 +30,8 @@
                 "Name": "BL_Angle",
                 "ControlMethod": "Angle",
                 "Type": "Falcon",
-                "CanID":5
+                "CanID":5,
+                "Coast":false
             },
             {
                 "Name": "BL_Wheel",
@@ -39,7 +42,8 @@
                 "Name": "BR_Angle",
                 "ControlMethod": "Angle",
                 "Type": "Falcon",
-                "CanID":7
+                "CanID":7,
+                "Coast":false
             },
             {
                 "Name": "BR_Wheel",
@@ -112,7 +116,12 @@
                 "kI": 1.00,
                 "kD": 1.00
             },
-            "Following":-1
+            "Following":-1,
+            "Coast":true,
+            "RampRate": 0.25,
+            "SensorType":11,
+            "LimitStateNO":true
+
         },
         "Spark": {
             "CanID": 0,
@@ -123,7 +132,8 @@
                 "kI": 1.00,
                 "kD": 1.00
             },
-            "Following":-1
+            "Following":-1,
+            "Coast":true
         }
         
     }

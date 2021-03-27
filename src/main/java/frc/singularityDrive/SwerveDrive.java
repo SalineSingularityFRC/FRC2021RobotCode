@@ -114,17 +114,17 @@ public class SwerveDrive  {
     }
 
     public SwerveDrive( int mFL_Angle_CAN, int mFL_Wheel_CAN, int mFR_Angle_CAN, int mFR_Wheel_CAN, int mBL_Angle_CAN, int mBL_Wheel_CAN, int mBR_Angle_CAN, int mBR_Wheel_CAN, double slowSpeedConstant, double normalSpeedConstant, double fastSpeedConstant, double rotationSpeedConstant){
-        m_FL_Angle = new Falcon(mFL_Angle_CAN);
-        m_FL_Wheel = new Falcon(mFL_Wheel_CAN);
+        m_FL_Angle = new Falcon(mFL_Angle_CAN, .25, false);
+        m_FL_Wheel = new Falcon(mFL_Wheel_CAN, .25, true);
 
-        m_FR_Angle = new Falcon(mFR_Angle_CAN);
-        m_FR_Wheel = new Falcon(mFR_Wheel_CAN);
+        m_FR_Angle = new Falcon(mFR_Angle_CAN, .25, false);
+        m_FR_Wheel = new Falcon(mFR_Wheel_CAN, .25, true);
 
-        m_BL_Angle = new Falcon(mBL_Angle_CAN);
-        m_BL_Wheel = new Falcon(mBL_Wheel_CAN);
+        m_BL_Angle = new Falcon(mBL_Angle_CAN, .25, false);
+        m_BL_Wheel = new Falcon(mBL_Wheel_CAN, .25, true);
 
-        m_BR_Angle = new Falcon(mBR_Angle_CAN);
-        m_BR_Wheel = new Falcon(mBR_Wheel_CAN);
+        m_BR_Angle = new Falcon(mBR_Angle_CAN, .25, false);
+        m_BR_Wheel = new Falcon(mBR_Wheel_CAN, .25, true);
 
     }
 

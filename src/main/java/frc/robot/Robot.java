@@ -80,7 +80,16 @@ public class Robot extends TimedRobot {
   //Compressor compressor;
   //Compressor compressor;
 
-  Falcon talon;
+  Falcon talon1;
+  Falcon talon2;
+  Falcon talon3;
+  Falcon talon4;
+
+  Falcon talon5;
+  Falcon talon6;
+  Falcon talon7;
+  Falcon talon8;
+
 
   //SendableChoosers
   //SendableChooser<Integer> goalChooser;
@@ -120,7 +129,16 @@ public class Robot extends TimedRobot {
     //initialize all mechanisms on the robot
     //smartDrive = new SmartBasicDrive(driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3);
 
-    talon = new Falcon(3);
+    talon1 = new Falcon(1, .25, true);
+    talon2 = new Falcon(2, .25, true);
+    talon3 = new Falcon(3, .25, true);
+    talon4 = new Falcon(4, .25, true);
+
+    talon5 = new Falcon(5, .25, true);
+    talon6 = new Falcon(6, .25, true);
+    talon7 = new Falcon(7, .25, true);
+    talon8 = new Falcon(8, .25, true);
+
     
 
     //drive = new BasicDrive(driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3);
@@ -264,7 +282,15 @@ public class Robot extends TimedRobot {
     //SmartDashboard.putNumber("Big Number Gyro Angle", gyro.getAngle());
 
     
-    talon.setSpeed(100);
+    talon1.setSpeed(100);
+    talon2.setSpeed(100);
+    talon3.setSpeed(100);
+    talon4.setSpeed(100);
+
+    talon5.setSpeed(100);
+    talon6.setSpeed(100);
+    talon7.setSpeed(100);
+    talon8.setSpeed(100);
 
     // Allow driver control based on current schem
 /*

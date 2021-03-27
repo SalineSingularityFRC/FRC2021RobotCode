@@ -2,7 +2,9 @@ package frc.controller.motorControllers;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
 import com.fasterxml.jackson.databind.util.ArrayBuilders.BooleanBuilder;
 
 import org.json.simple.*;
@@ -20,22 +22,41 @@ public class FalconBuilder {
     private double kD;
     private boolean limitState; ///NC vs NO
     private boolean inverted;
-    private FeedbackDevice sensor;
+    private int sensor;
     private int canCoderID;
+    
 
 
 
 
     public FalconBuilder(JSONObject jsonObject){
-        this( (int)jsonObject.get("CanID") );
+        this( (int)jsonObject.get("CanID"), (double) jsonObject.get("RampRate"), (boolean) jsonObject.get("Coast"), 
+            (double) ((JSONObject)jsonObject.get("PID")).get("kP"), (double) ((JSONObject)jsonObject.get("PID")).get("kI"), (double) ((JSONObject)jsonObject.get("PID")).get("kD"), 
+            (boolean) jsonObject.get("Limit"), (boolean) jsonObject.get("IsMotorInverted"), (int)jsonObject.get("SensorType"), (int)jsonObject.get("CanCoderID"));
     }
 
-    private FalconBuilder(int canID){
+    private FalconBuilder(int canID, double rampRate, boolean coast, 
+        double kp, double ki, double kd, boolean limitState, boolean inverted, 
+        int sensor, int canCoderID){
+
         this.canID = canID;
+        this.ramp = rampRate;
+        this.coast = coast;
+        this.kP = kp;
+        this.kI = ki;
+        this.kD = kd;
+        this.limitState = true;
+        this.inverted = inverted;
+        this.sensor = sensor;
+        this.canCoderID = canCoderID;
+
+
+
+        
     }
 
-    public FalconBuilder canID(int value){
-        this.canID = canID;
+    public FalconBuilder canID(int value){  
+        this.canID = value;
         return this;
     }
 
@@ -68,15 +89,11 @@ public class FalconBuilder {
         return this;
     }
 
-    public FalconBuilder sensor(FeedbackDevice value){
+    public FalconBuilder sensor(int value){
         this.sensor = value;
         return this;
     }
 
-    public FalconBuilder limitNormalState(boolean nc){
-        this.limitState = nc;
-        return this;
-    }
 
     public FalconBuilder sensorType(boolean nc){
         this.limitState = nc;
@@ -88,16 +105,36 @@ public class FalconBuilder {
         return this;
     }
 
+    
+
     public Falcon build(){
-        Falcon talon = new Falcon(this.canID, this.ramp, this.coast);
+        Falcon talon = new Falcon(this.canID, this.ramp, this.coast); 
         config.slot0.kP = this.kP;
         config.slot0.kI = this.kI;
         config.slot0.kD = this.kD;
         if( this.inverted ){
             talon.setInverted(InvertType.InvertMotorOutput);
         }
-        config.primaryPID.selectedFeedbackSensor = sensor;
-        config.remoteFilter0.remoteSensorDeviceID = this.canCoderID;
+        
+        //Decode the sensor number and turn them into FeedbackDevice objects
+        if(sensor == 1){
+            config.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice();
+        }
+        else if (sensor == 11){
+            config.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.RemoteSensor0.toFeedbackDevice();
+            config.remoteFilter0.remoteSensorDeviceID = this.canCoderID;
+        }
+        else if (sensor == 12){
+            config.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.RemoteSensor1.toFeedbackDevice();
+            config.remoteFilter1.remoteSensorDeviceID = this.canCoderID;
+        }
+        else if(sensor == 14){
+            config.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.None.toFeedbackDevice();
+        }
+        else if(sensor == 15){
+            config.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.SoftwareEmulatedSensor.toFeedbackDevice();
+        }
+        
 
 
         talon.setConfiguration(config);
