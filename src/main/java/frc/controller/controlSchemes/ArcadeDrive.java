@@ -21,6 +21,8 @@ import com.kauailabs.navx.frc.AHRS;
 /**
  * 
  * Main class to control the robot
+ * Use only if using swerve drive or old power-based driving with sparks
+ * For using sparks with velocity, use SmartArcadeDrive
  * 
  */
 public class ArcadeDrive extends ControlScheme {
@@ -114,7 +116,7 @@ public class ArcadeDrive extends ControlScheme {
      * Drives arcade drive
      * 
      */
-    public void drive(SwerveDrive drive) {
+    public void swerveDrive(SwerveDrive drive) {
         //Switch speed mode object, set to low with left bumber and high with right bumper
         /*if(driveController.getLB()) {
             speedMode = SpeedMode.SLOW;

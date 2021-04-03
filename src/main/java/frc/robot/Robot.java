@@ -125,7 +125,7 @@ public class Robot extends TimedRobot {
     // CameraServer.getInstance().startAutomaticCapture();
 
     // initialize our driving scheme to a basic arcade drive
-    // currentScheme = new SmartArcadeDrive(XBOX_PORT, XBOX_PORT +1);
+    currentScheme = new ArcadeDrive(XBOX_PORT, XBOX_PORT +1);
 
     gyro = new AHRS(SPI.Port.kMXP);
     // gyroResetAtTeleop = true;
@@ -346,6 +346,7 @@ public class Robot extends TimedRobot {
     //currentScheme.climber(climber);
     
     //SmartDashboard.getNumber("EncoderPosition", smartDrive.getCurrentPosition());
+    currentScheme.swerveDrive(drive);
     SmartDashboard.getNumber("Gyro Position", gyro.getAngle());
 
   }
