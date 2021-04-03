@@ -45,7 +45,7 @@ public abstract class ControlScheme {
 	 * @param gyroAngle any gyro value
 	 * @return the coterminal angle between 0 and 360.
 	 */
-	public static double smooshGyroAngle(double gyroAngle) {
+	public double smooshGyroAngle(double gyroAngle) {
 
 		if (gyroAngle <= 360 && gyroAngle >= 0) {
 			return gyroAngle;

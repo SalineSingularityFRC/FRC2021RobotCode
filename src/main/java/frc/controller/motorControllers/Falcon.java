@@ -14,12 +14,20 @@ import frc.controller.MotorController;
 public class Falcon implements MotorController {
 
     private WPI_TalonFX talon; 
+    private int canID;
+
 
     public Falcon(int canID, double rampRate, boolean coast ) {
         talon = new WPI_TalonFX(canID);
+        this.canID = canID;
+         
         talon.configFactoryDefault();
         setRampRate(rampRate);
         setCoastMode(coast);
+    }
+
+    public int getCanID(){
+        return canID;
     }
 
     public void setConfiguration(TalonFXConfiguration config){

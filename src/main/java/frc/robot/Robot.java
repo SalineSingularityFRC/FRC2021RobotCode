@@ -16,6 +16,7 @@ import frc.controller.motorControllers.Falcon;
 import frc.controller.autonomous.*;
 //import frc.controller.controlSchemes.Test;
 import frc.robot.Canifier;
+import frc.robot.Json;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.*;
@@ -28,8 +29,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.rmi.NoSuchObjectException;
+import java.util.HashMap;
 import org.json.simple.*;
 import org.json.simple.parser.*;
+import com.kauailabs.navx.frc.AHRS;
 
 
 /**
@@ -41,110 +45,136 @@ import org.json.simple.parser.*;
  */
 public class Robot extends TimedRobot {
 
-  //stores the motor controller IDs
+  // stores the motor controller IDs
   int driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3;
   int drivePneu1, drivePneu2;
   int colorSol1, colorSol2;
-  int  climberSol1, climberSol2;
+  int climberSol1, climberSol2;
   int colorSpinner;
-  
+
   int flywheelMotor1, flywheelMotor2, flywheelMotor3;
   int conveyorMotor1, conveyorMotor2;
   int downMotorPort;
 
-  //Declaration of our driving scheme, which can be initialized to
-  //any ControlScheme in robotInit()
+  // Declaration of our driving scheme, which can be initialized to
+  // any ControlScheme in robotInit()
   ControlScheme currentScheme;
 
-  //Declaration of mechanisms
-  //SingDrive drive;
-  //SmartSingDrive smartDrive; //if we want to use smart motion, change this to SmartSingDrive
-  //DrivePneumatics drivePneumatics;
-  //Flywheel flywheel;
-  //Conveyor conveyor;
-  //Climber climber;
+  Json json = new Json();
 
-  //Creates an all-knowing limelight
-  //LimeLight limeLight;  // or CitrusSight?
+  String[] motorNames = { "FL_Angle", "FL_Wheel", "BL_Angle", "BL_Wheel", "FR_Angle", "FR_Wheel", "BR_Angle",
+      "BR_Wheel", "Flywheel1", "Flywheel2", "FeederMotor" };
 
-  //Create a CANifier
-  //Canifier canifier;
+  HashMap<String, MotorController> motors = new HashMap<String, MotorController>();
 
-  //Create a ColorSensor
-  //ColorSensor colorSensor;
+  // Declaration of mechanisms
+  SwerveDrive drive;
+  // SmartSingDrive smartDrive; //if we want to use smart motion, change this to
+  // SmartSingDrive
+  // DrivePneumatics drivePneumatics;
+  Flywheel flywheel;
+  // Conveyor conveyor;
+  // Climber climber;
 
-  //Create a gyro
-  //AHRS gyro;
-  //boolean gyroResetAtTeleop;
+  // Creates an all-knowing limelight
+  LimeLight limeLight; // or CitrusSight?
 
-  //Compressor compressor;
-  //Compressor compressor;
+  // Create a CANifier
+  // Canifier canifier;
 
-  Falcon talon1;
-  Falcon talon2;
-  Falcon talon3;
-  Falcon talon4;
+  // Create a ColorSensor
+  // ColorSensor colorSensor;
 
-  Falcon talon5;
-  Falcon talon6;
-  Falcon talon7;
-  Falcon talon8;
+  // Create a gyro
+  AHRS gyro;
+  // boolean gyroResetAtTeleop;
 
+  // Compressor compressor;
+  // Compressor compressor;
 
-  //SendableChoosers
-  //SendableChooser<Integer> goalChooser;
-  //SendableChooser<Integer> positionChooser;
-  //SendableChooser<Integer> secondaryChooser;
-  
-  //SendableChooser autoChooser;  
+  /*
+   * Falcon talon1; Falcon talon2; Falcon talon3; Falcon talon4;
+   * 
+   * Falcon talon5; Falcon talon6; Falcon talon7; Falcon talon8;
+   */
 
+  // SendableChoosers
+  // SendableChooser<Integer> goalChooser;
+  // SendableChooser<Integer> positionChooser;
+  // SendableChooser<Integer> secondaryChooser;
 
-  //default ports of certain joysticks in DriverStation
+  // SendableChooser autoChooser;
+
+  // default ports of certain joysticks in DriverStation
   final int XBOX_PORT = 0;
-	final int BIG_JOYSTICK_PORT = 1;
+  final int BIG_JOYSTICK_PORT = 1;
   final int SMALL_JOYSTICK_PORT = 2;
 
-
   /**
-   * This function is run when the robot is first started up and should be
-   * used for any initialization code.
+   * This function is run when the robot is first started up and should be used
+   * for any initialization code.
    */
   @Override
   public void robotInit() {
-    //TODO un-comment methods
-    //initialize motor controller ports IDs
-    //Uncomment to initialize motor controllers aswell - commented for texting purposes
+    // TODO un-comment methods
+    // initialize motor controller ports IDs
+    // Uncomment to initialize motor controllers aswell - commented for texting
+    // purposes
     setDefaultProperties();
-    //CameraServer.getInstance().startAutomaticCapture();
-    //CameraServer.getInstance().startAutomaticCapture();
+    // CameraServer.getInstance().startAutomaticCapture();
+    // CameraServer.getInstance().startAutomaticCapture();
 
-    //initialize our driving scheme to a basic arcade drive
-    //currentScheme = new SmartArcadeDrive(XBOX_PORT, XBOX_PORT +1);
+    // initialize our driving scheme to a basic arcade drive
+    // currentScheme = new SmartArcadeDrive(XBOX_PORT, XBOX_PORT +1);
+
+    gyro = new AHRS(SPI.Port.kMXP);
+    // gyroResetAtTeleop = true;
+
+    // colorSensor = new ColorSensor(colorSpinner, colorSol1, colorSol2);
+
+    // initialize all mechanisms on the robot
+    // smartDrive = new SmartBasicDrive(driveLeft1, driveLeft2, driveLeft3,
+    // driveRight1, driveRight2, driveRight3);
+
+    /*
+     * talon1 = new Falcon(1, .25, true); talon2 = new Falcon(2, .25, true); talon3
+     * = new Falcon(3, .25, true); talon4 = new Falcon(4, .25, true);
+     * 
+     * talon5 = new Falcon(5, .25, true); talon6 = new Falcon(6, .25, true); talon7
+     * = new Falcon(7, .25, true); talon8 = new Falcon(8, .25, true);
+     */
+
+    for (int i = 0; i < motorNames.length; i++) {
+      try {
+        motors.put(motorNames[i], json.getSwerveDriveMotors(motorNames[i]));
+      } catch (NoSuchObjectException e) {
+        
+        //e.printStackTrace();
+        try{
+          motors.put(motorNames[i], json.getShooterMotor(motorNames[i]));
+
+        } catch (NoSuchObjectException f){
+          //e.printStackTrace();
+        }
+        
+      }
+    }
+
+
+
     
-    //gyro = new AHRS(SPI.Port.kMXP);
-    //gyroResetAtTeleop = true;
-
-    //colorSensor = new ColorSensor(colorSpinner, colorSol1, colorSol2);
-    
-    //initialize all mechanisms on the robot
-    //smartDrive = new SmartBasicDrive(driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3);
-
-    talon1 = new Falcon(1, .25, true);
-    talon2 = new Falcon(2, .25, true);
-    talon3 = new Falcon(3, .25, true);
-    talon4 = new Falcon(4, .25, true);
-
-    talon5 = new Falcon(5, .25, true);
-    talon6 = new Falcon(6, .25, true);
-    talon7 = new Falcon(7, .25, true);
-    talon8 = new Falcon(8, .25, true);
-
-    
-
+    if(json.isObject("SwerveDrive")){
+      drive = new SwerveDrive(motors.get("FL_Angle").getCanID(), motors.get("FL_Wheel").getCanID(), motors.get("FR_Angle").getCanID(), motors.get("FR_Wheel").getCanID(), 
+        motors.get("BL_Angle").getCanID(), motors.get("BL_Wheel").getCanID(), motors.get("BR_Angle").getCanID(), motors.get("BR_Wheel").getCanID(), 1, 1, 1, 1);
+    }
     //drive = new BasicDrive(driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3);
     // ^^^^^^^ change this to SmartBasicDrive if using SmartDrive
     //drivePneumatics = new DrivePneumatics(drivePneu1, drivePneu2);
-    //flywheel = new Flywheel(flywheelMotor1, flywheelMotor2, flywheelMotor3);
+    if(json.isObject("FLywheel")){
+      flywheel = new Flywheel(motors.get("Flywheel1").getCanID(), motors.get("Flywheel2").getCanID(), motors.get("FeederMotor").getCanID());
+      //flywheel = new Flywheel(flywheelMotor1, flywheelMotor2, flywheelMotor3);
+    }
+    
     //conveyor = new Conveyor(conveyorMotor1);
 
 
@@ -152,14 +182,14 @@ public class Robot extends TimedRobot {
     //climber = new Climber(downMotorPort,0,0);//TODO THE LAST TWO NUNMBERS AREN'T CORRECT
 
     
-    //limeLight = new LimeLight();
+    limeLight = new LimeLight();
     //limeLight.setCamMode(limeLight, 0.0);
     //DO NOT REMOVE PLZ - starts collecting data from drive cameras
     //start collecting data from drive cameras
     // This is not used if the raspberry pi is being used for image compression
     //CameraServer.getInstance().startAutomaticCapture();
 
-    //gyro = new AHRS(SPI.Port.kMXP);
+    gyro = new AHRS(SPI.Port.kMXP);
     //gyroResetAtTeleop = true;
 
     //tutorial code for the sendableChooser in case it breaks
@@ -281,7 +311,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     //SmartDashboard.putNumber("Big Number Gyro Angle", gyro.getAngle());
 
-    
+    /*
     talon1.setSpeed(100);
     talon2.setSpeed(100);
     talon3.setSpeed(100);
@@ -290,7 +320,7 @@ public class Robot extends TimedRobot {
     talon5.setSpeed(100);
     talon6.setSpeed(100);
     talon7.setSpeed(100);
-    talon8.setSpeed(100);
+    talon8.setSpeed(100);*/
 
     // Allow driver control based on current schem
 /*
@@ -316,7 +346,7 @@ public class Robot extends TimedRobot {
     //currentScheme.climber(climber);
     
     //SmartDashboard.getNumber("EncoderPosition", smartDrive.getCurrentPosition());
-    //SmartDashboard.getNumber("Gyro Position", gyro.getAngle());
+    SmartDashboard.getNumber("Gyro Position", gyro.getAngle());
 
   }
 

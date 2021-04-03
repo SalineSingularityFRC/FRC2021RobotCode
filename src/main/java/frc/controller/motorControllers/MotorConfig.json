@@ -76,8 +76,8 @@
                     "kI": 1.00,
                     "kD": 1.00
                 },
-                "IsMotorInverted":true,
-                "Following":-1
+                "IsMotorInverted":true
+                
 
             },
             {
@@ -90,6 +90,7 @@
                     "kI": 1.00,
                     "kD": 1.00
                 },
+                "Following":1,
                 "IsMotorInverted":false
             },
             {
@@ -105,6 +106,10 @@
                 "IsMotorInverted":false
             }
         ]
+    },
+    "Limelight":{
+        "kP_Distance": 0.055,
+        "kP_Heading": 0.055
     },
     "DefaultConfig": {
         "Falcon": {

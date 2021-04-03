@@ -248,10 +248,10 @@ public class SwerveDrive  {
 
         //System.out.println(String.format("(%.3f , %.3f) %n %n", mBR_XPos_Next, mBR_YPos_Next));
 
-        m_FL_Angle.setPosition(FL_Angle);
-        m_FR_Angle.setPosition(FR_Angle);
-        m_BL_Angle.setPosition(BL_Angle);
-        m_BR_Angle.setPosition(BR_Angle);
+        m_FL_Angle.setPosition(gyroWheelCompensate(gyroRotation, FL_Angle));
+        m_FR_Angle.setPosition(gyroWheelCompensate(gyroRotation, FR_Angle));
+        m_BL_Angle.setPosition(gyroWheelCompensate(gyroRotation, BL_Angle));
+        m_BR_Angle.setPosition(gyroWheelCompensate(gyroRotation, BR_Angle));
 
         m_FL_Wheel.setRPMFromStick(FL_Distance / 2.0);
         m_FR_Wheel.setRPMFromStick(FR_Distance / 2.0);

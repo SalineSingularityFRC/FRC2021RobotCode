@@ -41,6 +41,10 @@ public class Json {
 
     }
 
+    public boolean isObject(String name){
+        return (jsonObject.get(name) != null);
+    }
+
     private MotorController getMotor(JSONObject Motor, JSONObject Default) {
         
         MotorController returnMotor;
@@ -158,6 +162,15 @@ public class Json {
 
         throw new NoSuchObjectException("Motor Not Found");
 
+    }
+
+    public double getLimelightKP_Heading(){
+        JSONObject Limelight = (JSONObject) jsonObject.get("Limelight");
+        return (double) Limelight.get("kP_Heading");
+    }
+    public double getLimelightKP_Distance(){
+        JSONObject Limelight = (JSONObject) jsonObject.get("Limelight");
+        return (double) Limelight.get("kP_Distance");
     }
 
 }
