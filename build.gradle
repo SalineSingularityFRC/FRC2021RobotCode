@@ -52,7 +52,7 @@ dependencies {
     nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
     //implementation "org.json:1.1"
 
-    implementation files("libs/json-simple-1.1.jar")
+    implementation files("libs/json-simple-1.1.1.jar")
 
     implementation wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)

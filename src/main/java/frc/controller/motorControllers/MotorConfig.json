@@ -5,54 +5,62 @@
                 "Name": "FL_Angle",
                 "ControlMethod": "Angle",
                 "Type": "Falcon",
-                "CanID":1,
+                "CanID":57,
                 "Coast":false,
-                "CanCoderID":41
+                "CanCoderID":41,
+                "SensorType":11
             },
             {
                 "Name": "FL_Wheel",
                 "Type": "Falcon",
-                "CanID":2
+                "CanID":58,
+                "SensorType":1
             },
             {
                 "Name": "FR_Angle",
                 "ControlMethod": "Angle",
                 "Type": "Falcon",
-                "CanID":3,
+                "CanID":55,
                 "Coast":false,
-                "CanCoderID":42
+                "CanCoderID":43,
+                "SensorType":11
             },
             {
                 "Name": "FR_Wheel",
                 "Type": "Falcon",
-                "CanID":4
+                "CanID":56,
+                "SensorType":1
 
             },
             {
                 "Name": "BL_Angle",
                 "ControlMethod": "Angle",
                 "Type": "Falcon",
-                "CanID":5,
+                "CanID":51,
                 "Coast":false,
-                "CanCoderID":43
+                "CanCoderID":44,
+                "SensorType":11
             },
             {
                 "Name": "BL_Wheel",
                 "Type": "Falcon",
-                "CanID":6
+                "CanID":52,
+                "SensorType":1
             },
             {
                 "Name": "BR_Angle",
                 "ControlMethod": "Angle",
                 "Type": "Falcon",
-                "CanID":7,
+                "CanID":53,
                 "Coast":false,
-                "CanCoderID":44
+                "CanCoderID":42,
+                "SensorType":11
             },
             {
                 "Name": "BR_Wheel",
                 "Type": "Falcon",
-                "CanID":8
+                "CanID":54,
+                "SensorType":1
 
             }
         ],
