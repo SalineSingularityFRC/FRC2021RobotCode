@@ -76,6 +76,7 @@ public class Json {
                 fb.sensorType((boolean) Motor.get("LimitStateNO"));
             if (Motor.get("CanCoderID") != null)
                 fb.CanCoderID((int) Motor.get("CanCoderID"));
+            
             returnMotor = fb.build();
         } 
         else {

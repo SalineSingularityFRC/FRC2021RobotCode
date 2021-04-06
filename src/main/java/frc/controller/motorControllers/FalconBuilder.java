@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.ctre.phoenix.sensors.CANCoder;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
 import com.fasterxml.jackson.databind.util.ArrayBuilders.BooleanBuilder;
 
@@ -24,6 +25,7 @@ public class FalconBuilder {
     private boolean inverted;
     private int sensor;
     private int canCoderID;
+    
     
 
 
@@ -105,6 +107,12 @@ public class FalconBuilder {
         return this;
     }
 
+    public int cancoderToCanID(){
+        CANCoder cancoder = new CANCoder(this.canID);
+        return cancoder.getDeviceID();
+
+    }
+
     
 
     public Falcon build(){
@@ -122,11 +130,11 @@ public class FalconBuilder {
         }
         else if (sensor == 11){
             config.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.RemoteSensor0.toFeedbackDevice();
-            config.remoteFilter0.remoteSensorDeviceID = this.canCoderID;
+            config.remoteFilter0.remoteSensorDeviceID = cancoderToCanID();
         }
         else if (sensor == 12){
             config.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.RemoteSensor1.toFeedbackDevice();
-            config.remoteFilter1.remoteSensorDeviceID = this.canCoderID;
+            config.remoteFilter1.remoteSensorDeviceID = cancoderToCanID();
         }
         else if(sensor == 14){
             config.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.None.toFeedbackDevice();
