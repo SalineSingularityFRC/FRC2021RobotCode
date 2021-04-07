@@ -32,9 +32,16 @@ public class FalconBuilder {
 
 
     public FalconBuilder(JSONObject jsonObject){
-        this( (int)jsonObject.get("CanID"), (double) jsonObject.get("RampRate"), (boolean) jsonObject.get("Coast"), 
-            (double) ((JSONObject)jsonObject.get("PID")).get("kP"), (double) ((JSONObject)jsonObject.get("PID")).get("kI"), (double) ((JSONObject)jsonObject.get("PID")).get("kD"), 
-            (boolean) jsonObject.get("Limit"), (boolean) jsonObject.get("IsMotorInverted"), (int)jsonObject.get("SensorType"), (int)jsonObject.get("CanCoderID"));
+        this( (int)jsonObject.get("CanID"), 
+            (double) jsonObject.get("RampRate"), 
+            (boolean) jsonObject.get("Coast"), 
+            (double) ((JSONObject)jsonObject.get("PID")).get("kP"), 
+            (double) ((JSONObject)jsonObject.get("PID")).get("kI"), 
+            (double) ((JSONObject)jsonObject.get("PID")).get("kD"), 
+            (boolean) jsonObject.get("Limit"), 
+            (boolean) jsonObject.get("IsMotorInverted"), 
+            (int)jsonObject.get("SensorType"), 
+            (int)jsonObject.get("CanCoderID"));
     }
 
     private FalconBuilder(int canID, double rampRate, boolean coast, 

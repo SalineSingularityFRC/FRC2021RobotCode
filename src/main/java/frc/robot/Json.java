@@ -26,11 +26,12 @@ public class Json {
         parser = new JSONParser();
         Object obj;
         try {
-            obj = parser.parse(new FileReader("../motorControllers/MotorConfig.json"));
+            obj = parser.parse(new FileReader("/home/lvuser/MotorConfig.json"));
             jsonObject = (JSONObject) obj;
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.err.println(e.getMessage());
+            //System.exit(1);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -150,8 +151,8 @@ public class Json {
     }
 
     public MotorController getSwerveDriveMotors(String name) throws NoSuchObjectException {
-        JSONObject Swerve = (JSONObject) jsonObject.get("Swerve");
-        JSONArray Motors = (JSONArray) jsonObject.get("Motors");
+        JSONObject Swerve = (JSONObject) jsonObject.get("SwerveDrive");
+        JSONArray Motors = (JSONArray) Swerve.get("Motors");
         JSONObject Default = (JSONObject) jsonObject.get("DefaultConfig");
         Iterator i = Motors.iterator();
         while (i.hasNext()) {
