@@ -55,40 +55,40 @@ public class Json {
             JSONObject FalconDefault = (JSONObject) Default.get(motorType);
             FalconBuilder fb = new FalconBuilder(FalconDefault);
             if (Motor.get("CanID") != null)
-                fb.canID((int) Motor.get("CanID"));
+                fb.canID((int) (long) Motor.get("CanID"));
             if (Motor.get("Ramp") != null)
                 fb.ramp((double) Motor.get("Ramp"));
             if (Motor.get("Coast") != null)
                 fb.coast((boolean) Motor.get("Coast"));
             if(Motor.get("PID") != null){
                 JSONObject PID = (JSONObject) Motor.get("PID");
-                if (Motor.get("kP") != null )
+                if (PID.get("kP") != null )
                     fb.kP((double) PID.get("kP"));
-                if (Motor.get("kI") != null )
+                if (PID.get("kI") != null )
                     fb.kI((double) PID.get("kI"));
-                if (Motor.get("kD") != null )
+                if (PID.get("kD") != null )
                     fb.kD((double) PID.get("kD"));
             }
             if (Motor.get("IsMotorInverted") != null)
                 fb.inverted((boolean) Motor.get("IsMotorInverted"));
             if (Motor.get("SensorType") != null)
-                fb.sensor((int) Motor.get("SensorType"));
+                fb.sensor((int) (long) Motor.get("SensorType"));
             if (Motor.get("LimitStateNO") != null)
                 fb.sensorType((boolean) Motor.get("LimitStateNO"));
             if (Motor.get("CanCoderID") != null)
-                fb.CanCoderID((int) Motor.get("CanCoderID"));
+                fb.CanCoderID((int) (long) Motor.get("CanCoderID"));
             
             returnMotor = fb.build();
         } 
         else {
             JSONObject SparkDefault = (JSONObject) Default.get("Spark");
-            // return new Spark((int)Motor.get("CanID"), true, 1, (String)Motor.get("Name"),
+            // return new Spark((int) (long) Motor.get("CanID"), true, 1, (String)Motor.get("Name"),
             // false, false,
             // (double)PID.get("kP"), (double)PID.get("kI"), (double)PID.get("kD"), 1, 1, 1,
             // 1);
             SparkBuilder sb = new SparkBuilder(SparkDefault);
             if (Motor.get("CanID") != null)
-                sb.portNumber((int) Motor.get("CanID"));
+                sb.portNumber((int) (long) Motor.get("CanID"));
             if (Motor.get("BrushlessMotor") != null)
                 sb.brushlessMotor((boolean) Motor.get("BrushlessMotor"));
             if (Motor.get("RampRate") != null)
@@ -101,15 +101,15 @@ public class Json {
                 sb.upperLimitSwitch((boolean) Motor.get("UpperLimit"));
             if(Motor.get("PID") != null){
                 JSONObject PID = (JSONObject) Motor.get("PID");
-                if (Motor.get("kP") != null )
+                if (PID.get("kP") != null )
                     sb.kP((double) PID.get("kP"));
-                if (Motor.get("kI") != null )
+                if (PID.get("kI") != null )
                     sb.kI((double) PID.get("kI"));
-                if (Motor.get("kD") != null )
+                if (PID.get("kD") != null )
                     sb.kD((double) PID.get("kD"));
-                if (Motor.get("kIZ") != null )
+                if (PID.get("kIZ") != null )
                     sb.kIZ((double) PID.get("kIZ"));
-                if (Motor.get("kFF") != null )
+                if (PID.get("kFF") != null )
                     sb.kFF((double) PID.get("kFF"));
             }
             if (Motor.get("kMinOut") != null)
@@ -124,19 +124,19 @@ public class Json {
 
     public int getChassisLength() {
         JSONObject Chassis = (JSONObject) jsonObject.get("Chassis");
-        return (int) Chassis.get("Length");
+        return (int) (long) Chassis.get("Length");
     }
 
     public int getChassisWidth() {
         JSONObject Chassis = (JSONObject) jsonObject.get("Chassis");
-        return (int) Chassis.get("Width");
+        return (int) (long) Chassis.get("Width");
     }
 
     public MotorController getShooterMotor(String name) throws NoSuchObjectException {
         JSONObject Shooter = (JSONObject) jsonObject.get("Shooter");
-        JSONArray Motors = (JSONArray) jsonObject.get("Motors");
+        JSONArray Motors = (JSONArray) Shooter.get("Motors");
         JSONObject Default = (JSONObject) jsonObject.get("DefaultConfig");
-        Iterator i = Motors.iterator();
+        Iterator<JSONObject> i = Motors.iterator();
         while (i.hasNext()) {
             JSONObject Motor = (JSONObject) i.next();
             if (((String) Motor.get("Name")).equalsIgnoreCase(name)) {

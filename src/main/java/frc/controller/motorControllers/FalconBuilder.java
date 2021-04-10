@@ -3,6 +3,7 @@ package frc.controller.motorControllers;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.SlotConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
@@ -32,7 +33,8 @@ public class FalconBuilder {
 
 
     public FalconBuilder(JSONObject jsonObject){
-        this( (int)jsonObject.get("CanID"), 
+    
+        this( (int) (long) jsonObject.get("CanID"), 
             (double) jsonObject.get("RampRate"), 
             (boolean) jsonObject.get("Coast"), 
             (double) ((JSONObject)jsonObject.get("PID")).get("kP"), 
@@ -40,8 +42,8 @@ public class FalconBuilder {
             (double) ((JSONObject)jsonObject.get("PID")).get("kD"), 
             (boolean) jsonObject.get("Limit"), 
             (boolean) jsonObject.get("IsMotorInverted"), 
-            (int)jsonObject.get("SensorType"), 
-            (int)jsonObject.get("CanCoderID"));
+            (int) (long) jsonObject.get("SensorType"), 
+            (int) (long) jsonObject.get("CanCoderID"));
     }
 
     private FalconBuilder(int canID, double rampRate, boolean coast, 
@@ -123,7 +125,9 @@ public class FalconBuilder {
     
 
     public Falcon build(){
-        Falcon talon = new Falcon(this.canID, this.ramp, this.coast); 
+        Falcon talon = new Falcon(this.canID, this.ramp, this.coast);
+        config = new TalonFXConfiguration(); 
+        // config.slot0 = new SlotConfiguration();
         config.slot0.kP = this.kP;
         config.slot0.kI = this.kI;
         config.slot0.kD = this.kD;

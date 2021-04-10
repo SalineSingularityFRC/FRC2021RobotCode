@@ -3,6 +3,7 @@ package frc.controller.motorControllers;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import org.json.simple.*;
 import org.json.simple.parser.*;
@@ -33,7 +34,7 @@ public class SparkBuilder {
     public SparkBuilder(JSONObject Motor){
         
         this(
-            (int)Motor.get("CanID"), 
+            (int) (long) Motor.get("CanID"), 
             true, 
             1, 
             (String)Motor.get("Name"), 
@@ -52,6 +53,11 @@ public class SparkBuilder {
     private SparkBuilder(int portNumber, boolean brushlessMotor, double rampRate, String name, boolean useLimitSwitch, boolean useUpperLimitSwitch,
                         double kP, double kI, double kD, double kIZ, double kFF, double kMinOut, double kMaxOut){
         this.portNumber = portNumber;
+        if (brushlessMotor) {
+            m_motor = new CANSparkMax(portNumber, MotorType.kBrushless);
+        } else {
+            m_motor = new CANSparkMax(portNumber, MotorType.kBrushed);
+        }
 
         this.m_pidController = m_motor.getPIDController();
 
