@@ -31,6 +31,10 @@ public class Test extends ControlScheme{
         
     }
 
+    public void swerveDrive(SwerveDrive drive) {
+
+    }
+
     public void smartDrive(SmartSingDrive drive, DrivePneumatics pneumatics) {
         
     }

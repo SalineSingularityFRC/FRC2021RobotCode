@@ -7,6 +7,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.singularityDrive.SingDrive;
 import frc.singularityDrive.SmartSingDrive;
+import frc.singularityDrive.SwerveDrive;
 import frc.singularityDrive.SingDrive.SpeedMode;
 
 public class LimeLight{
@@ -19,6 +20,8 @@ public class LimeLight{
     //LimeLightDrive 
     final double target_distance = 9.7;
     //final double headingCorrector = -2.0;
+
+    Json json = new Json();
 
 
     /**
@@ -89,7 +92,7 @@ public class LimeLight{
 
 
     /**
-     * LimeLgiht Drive - 2020 atempt at aiming
+     * LimeLight Drive - 2020 atempt at aiming
      *                   and posibly getting in range
      * 
      * 
@@ -98,25 +101,32 @@ public class LimeLight{
      */
 
 
-    public boolean runLimeLight( SingDrive drive){
+    public boolean runLimeLight( SwerveDrive drive, AHRS gyro){
 
         double hasVision = tv.getDouble(0.0);
         
         if(hasVision == 1.0 && !(tx.getDouble(0.0) <= 0.1 && tx.getDouble(0.0) >= -0.1)){
-            
+            /*
             double left_comand = 0.0;
-            double right_comand = 0.0;
+            double right_comand = 0.0;*/
             
             double heading_error = -tx.getDouble(0.0);
             double distance_error = target_distance - ty.getDouble(0.0);
 
-            left_comand += heading_error * 0.055;
+            double kP_Distance = json.getLimelightKP_Distance();
+            double kP_Heading = json.getLimelightKP_Heading();
+
+            /*left_comand += heading_error * 0.055;
             right_comand -= heading_error * 0.055;
             
             left_comand += distance_error * 0.055;
             right_comand += distance_error *0.055;
 
-            drive.arcadeDrive(left_comand, right_comand, 0.0, false, SingDrive.SpeedMode.SLOW);
+            drive.arcadeDrive(left_comand, right_comand, 0.0, false, SingDrive.SpeedMode.SLOW);*/
+
+            double rotate = heading_error * kP_Heading;
+            drive.swerveDrive(0, 0, rotate, gyro.getAngle());
+            drive.swerveDrive(distance_error * kP_Distance, 0, 0, 0);
 
             return true;
         

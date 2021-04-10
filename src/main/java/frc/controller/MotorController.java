@@ -16,6 +16,8 @@ public interface MotorController {
      */
     public void follow(MotorController baseController, boolean invert);
 
+    public int getCanID();
+
     /**
      * Set the motor controller to percent of the available voltage
      * @param percentOutput between -1.0 and 1.0

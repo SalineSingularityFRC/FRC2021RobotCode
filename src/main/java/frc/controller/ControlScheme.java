@@ -14,6 +14,7 @@ import frc.singularityDrive.SingDrive;
 import frc.robot.LimeLight;
 import com.kauailabs.navx.frc.AHRS;
 import frc.singularityDrive.SmartSingDrive;
+import frc.singularityDrive.SwerveDrive;
 
 
 /**
@@ -33,7 +34,8 @@ public abstract class ControlScheme {
 	public abstract void conveyorFlywheel(Conveyor conveyor, Flywheel flywheel);
 	public abstract void climber(Climber climber);
 	public abstract void climberReset(Climber climber);
- 	public abstract void colorSensor(ColorSensor colorSensor);
+	 public abstract void colorSensor(ColorSensor colorSensor);
+	 public abstract void swerveDrive(SwerveDrive drive);
 
 	// In addation to defining our various different mechanisms to be expanded upon in subclasses (other controlSchemes, i.e. ArcadeDrive),
 	// various different methods to interact with the gyro are also included in here. Why? I don't know, but they can be accessed anywhere from
@@ -45,7 +47,7 @@ public abstract class ControlScheme {
 	 * @param gyroAngle any gyro value
 	 * @return the coterminal angle between 0 and 360.
 	 */
-	public static double smooshGyroAngle(double gyroAngle) {
+	public double smooshGyroAngle(double gyroAngle) {
 
 		if (gyroAngle <= 360 && gyroAngle >= 0) {
 			return gyroAngle;

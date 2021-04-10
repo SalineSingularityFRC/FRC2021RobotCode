@@ -3,6 +3,10 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2021.2.2"
 }
 
+repositories{
+    mavenCentral()
+}
+
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
@@ -46,7 +50,9 @@ dependencies {
     implementation wpi.deps.wpilib()
     nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
+    //implementation "org.json:1.1"
 
+    implementation files("libs/json-simple-1.1.1.jar")
 
     implementation wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)

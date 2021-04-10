@@ -10,6 +10,7 @@ import frc.robot.Flywheel;
 import frc.robot.LimeLight;
 import frc.singularityDrive.SingDrive;
 import frc.singularityDrive.SmartSingDrive;
+import frc.singularityDrive.SwerveDrive;
 import frc.singularityDrive.SmartSingDrive.SpeedMode;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 
@@ -50,6 +51,11 @@ public class SmartArcadeDrive extends ControlScheme {
     public void drive(SingDrive drive, DrivePneumatics pneumatics) {
 
     }
+
+    public void swerveDrive(SwerveDrive drive) {
+
+    }
+    
 
     /**
      * Drives arcade drive

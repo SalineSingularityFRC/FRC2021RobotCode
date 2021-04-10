@@ -346,7 +346,7 @@ public abstract class SingDrive {
 
 
 	public boolean limeLightDrive(LimeLight limeLight){
-		return limeLight.runLimeLight(this);
+		return true;
     }
 
 
@@ -381,13 +381,14 @@ public abstract class SingDrive {
         offSetButton = driveController.getYButton();*/
         
         // Defining and Declaring currentAngle as angle from gyro, between 0 and 360 degrees
-        double currentAngle = ControlScheme.smooshGyroAngle(gyro.getAngle());
+		//double currentAngle = ControlScheme.smooshGyroAngle(gyro.getAngle());
+		double currentAngle = 0;
         SmartDashboard.putNumber("current angle:", currentAngle);
 
         // Resets gyro value to 0
         if (aButton) {
             gyro.setAngleAdjustment(0);
-            gyro.setAngleAdjustment(-ControlScheme.smooshGyroAngle(gyro.getAngle()));
+            //gyro.setAngleAdjustment(-ControlScheme.smooshGyroAngle(gyro.getAngle()));
         }
 
         
