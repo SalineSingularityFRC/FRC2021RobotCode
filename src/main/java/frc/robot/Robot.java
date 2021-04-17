@@ -19,6 +19,7 @@ import frc.robot.Canifier;
 import frc.robot.Json;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.*;
 
 import edu.wpi.first.wpilibj.Compressor;
@@ -59,6 +60,7 @@ public class Robot extends TimedRobot {
   // Declaration of our driving scheme, which can be initialized to
   // any ControlScheme in robotInit()
   ControlScheme currentScheme;
+  
 
   Json json = new Json();
 
@@ -88,6 +90,7 @@ public class Robot extends TimedRobot {
   // Create a gyro
   AHRS gyro;
   // boolean gyroResetAtTeleop;
+
 
   // Compressor compressor;
   // Compressor compressor;
@@ -127,7 +130,8 @@ public class Robot extends TimedRobot {
     // initialize our driving scheme to a basic arcade drive
     currentScheme = new ArcadeDrive(XBOX_PORT, XBOX_PORT +1);
 
-    gyro = new AHRS(SPI.Port.kMXP);
+    //gyro = new AHRS(SPI.Port.kMXP);
+    ((ArcadeDrive)currentScheme).initGyro();
     // gyroResetAtTeleop = true;
 
     // colorSensor = new ColorSensor(colorSpinner, colorSol1, colorSol2);
@@ -301,6 +305,8 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     //drive.setInitialPosition();
     //Falcon talon = new Falcon(3);
+    
+
 
   }
 
@@ -310,6 +316,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     //SmartDashboard.putNumber("Big Number Gyro Angle", gyro.getAngle());
+
+    System.out.println("\nCurrent Sensor Position: \t" + ((Falcon)motors.get("FL_Angle")).getFeedbackSensorPos());
+
 
     /*
     talon1.setSpeed(100);
@@ -347,7 +356,7 @@ public class Robot extends TimedRobot {
     
     //SmartDashboard.getNumber("EncoderPosition", smartDrive.getCurrentPosition());
     currentScheme.swerveDrive(drive);
-    SmartDashboard.getNumber("Gyro Position", gyro.getAngle());
+    //SmartDashboard.getNumber("Gyro Position", gyro.getAngle());
 
   }
 

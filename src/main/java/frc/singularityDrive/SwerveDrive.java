@@ -248,7 +248,7 @@ public class SwerveDrive  {
 
         //System.out.println(String.format("(%.3f , %.3f) %n %n", mBR_XPos_Next, mBR_YPos_Next));
 
-        m_FL_Angle.setPosition(gyroWheelCompensate(gyroRotation, FL_Angle));
+        /*m_FL_Angle.setPosition(gyroWheelCompensate(gyroRotation, FL_Angle));
         m_FR_Angle.setPosition(gyroWheelCompensate(gyroRotation, FR_Angle));
         m_BL_Angle.setPosition(gyroWheelCompensate(gyroRotation, BL_Angle));
         m_BR_Angle.setPosition(gyroWheelCompensate(gyroRotation, BR_Angle));
@@ -256,7 +256,21 @@ public class SwerveDrive  {
         m_FL_Wheel.setRPMFromStick(FL_Distance / 2.0);
         m_FR_Wheel.setRPMFromStick(FR_Distance / 2.0);
         m_BL_Wheel.setRPMFromStick(BL_Distance / 2.0);
-        m_BR_Wheel.setRPMFromStick(BR_Distance / 2.0);
+        m_BR_Wheel.setRPMFromStick(BR_Distance / 2.0);*/
+        //System.out.println("\nMy current value is " + BR_Distance + "\n");
+
+        //m_FL_Angle.setPosition(gyroWheelCompensate(gyroRotation, FL_Angle));
+        //m_FR_Angle.setPosition(gyroWheelCompensate(gyroRotation, FR_Angle));
+        //m_BL_Angle.setPosition(gyroWheelCompensate(gyroRotation, BL_Angle));
+        //m_BR_Angle.setPosition(gyroWheelCompensate(gyroRotation, BR_Angle));
+        System.out.println(FL_Angle + "\n");
+
+        m_FL_Wheel.setRPMFromStick(0.0);
+        m_FR_Wheel.setRPMFromStick(0.0);
+        m_BL_Wheel.setRPMFromStick(0.0);
+        m_BR_Wheel.setRPMFromStick(0.0);
+
+
 
     }
 

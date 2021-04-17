@@ -10,9 +10,10 @@
                 "CanCoderID":41,
                 "SensorType":11,
                 "PID": {
-                    "kP": 1.00,
-                    "kI": 1.00,
-                    "kD": 1.00
+                    "kP": 0.20,
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 1.00
                 }
             },
             {
@@ -22,8 +23,9 @@
                 "SensorType":1,
                 "PID": {
                     "kP": 1.00,
-                    "kI": 1.00,
-                    "kD": 1.00
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 0.00
                 }
             },
             {
@@ -35,9 +37,10 @@
                 "CanCoderID":43,
                 "SensorType":11,
                 "PID": {
-                    "kP": 1.00,
-                    "kI": 1.00,
-                    "kD": 1.00
+                    "kP": 0.20,
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 1.00
                 }
             },
             {
@@ -47,8 +50,9 @@
                 "SensorType":1,
                 "PID": {
                     "kP": 1.00,
-                    "kI": 1.00,
-                    "kD": 1.00
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 0.00
                 }
 
             },
@@ -61,9 +65,10 @@
                 "CanCoderID":44,
                 "SensorType":11,
                 "PID": {
-                    "kP": 1.00,
-                    "kI": 1.00,
-                    "kD": 1.00
+                    "kP": 0.20,
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 1.00
                 }
             },
             {
@@ -73,8 +78,9 @@
                 "SensorType":1,
                 "PID": {
                     "kP": 1.00,
-                    "kI": 1.00,
-                    "kD": 1.00
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 0.00
                 }
             },
             {
@@ -86,9 +92,10 @@
                 "CanCoderID":42,
                 "SensorType":11,
                 "PID": {
-                    "kP": 1.00,
-                    "kI": 1.00,
-                    "kD": 1.00
+                    "kP": 0.20,
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 1.00
                 }
             },
             {
@@ -98,8 +105,9 @@
                 "SensorType":1,
                 "PID": {
                     "kP": 1.00,
-                    "kI": 1.00,
-                    "kD": 1.00
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 0.00
                 }
 
             }
@@ -121,7 +129,7 @@
             {
                 "Name":"Flywheel1",
                 "Type":"Spark",
-                "CanID":1,
+                "CanID":11,
                 "ControlMethod":"Velocity",
                 "PID": {
                     "kP": 1.00,
@@ -135,20 +143,20 @@
             {
                 "Name":"Flywheel2",
                 "Type":"Spark",
-                "CanID":2,
+                "CanID":12,
                 "ControlMethod":"Velocity",
                 "PID": {
                     "kP": 1.00,
                     "kI": 1.00,
                     "kD": 1.00
                 },
-                "Following":1,
+                "Following":11,
                 "IsMotorInverted":false
             },
             {
                 "Name":"FeederMotor",
                 "Type":"Spark",
-                "CanID":3,
+                "CanID":8,
                 "ControlMethod":"Velocity",
                 "PID": {
                     "kP": 1.00,
@@ -171,7 +179,8 @@
             "PID": {
                 "kP": 1.00,
                 "kI": 1.00,
-                "kD": 1.00
+                "kD": 1.00,
+                "kF": 1.00
             },
             "Following":-1,
             "Coast":true,

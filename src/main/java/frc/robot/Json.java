@@ -68,6 +68,9 @@ public class Json {
                     fb.kI((double) PID.get("kI"));
                 if (PID.get("kD") != null )
                     fb.kD((double) PID.get("kD"));
+                if (PID.get("kF") != null )
+                    fb.kF((double) PID.get("kF"));
+                
             }
             if (Motor.get("IsMotorInverted") != null)
                 fb.inverted((boolean) Motor.get("IsMotorInverted"));

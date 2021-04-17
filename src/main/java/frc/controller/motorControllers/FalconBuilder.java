@@ -22,10 +22,12 @@ public class FalconBuilder {
     private double kP;
     private double kI;
     private double kD;
+    private double kF;
     private boolean limitState; ///NC vs NO
     private boolean inverted;
     private int sensor;
     private int canCoderID;
+    
     
     
 
@@ -39,7 +41,8 @@ public class FalconBuilder {
             (boolean) jsonObject.get("Coast"), 
             (double) ((JSONObject)jsonObject.get("PID")).get("kP"), 
             (double) ((JSONObject)jsonObject.get("PID")).get("kI"), 
-            (double) ((JSONObject)jsonObject.get("PID")).get("kD"), 
+            (double) ((JSONObject)jsonObject.get("PID")).get("kD"),
+            (double) ((JSONObject)jsonObject.get("PID")).get("kF"),  
             (boolean) jsonObject.get("Limit"), 
             (boolean) jsonObject.get("IsMotorInverted"), 
             (int) (long) jsonObject.get("SensorType"), 
@@ -47,7 +50,7 @@ public class FalconBuilder {
     }
 
     private FalconBuilder(int canID, double rampRate, boolean coast, 
-        double kp, double ki, double kd, boolean limitState, boolean inverted, 
+        double kp, double ki, double kd, double kF, boolean limitState, boolean inverted, 
         int sensor, int canCoderID){
 
         this.canID = canID;
@@ -60,11 +63,14 @@ public class FalconBuilder {
         this.inverted = inverted;
         this.sensor = sensor;
         this.canCoderID = canCoderID;
+        this.kF = kF;
 
 
 
         
     }
+
+    
 
     public FalconBuilder canID(int value){  
         this.canID = value;
@@ -95,6 +101,11 @@ public class FalconBuilder {
         return this;
     }
 
+    public FalconBuilder kF(double value){
+        this.kF = value;
+        return this;
+    }
+
     public FalconBuilder inverted(boolean value){
         this.inverted = value;
         return this;
@@ -117,7 +128,9 @@ public class FalconBuilder {
     }
 
     public int cancoderToCanID(){
-        CANCoder cancoder = new CANCoder(this.canID);
+        CANCoder cancoder = new CANCoder(this.canCoderID);
+        cancoder.setPositionToAbsolute();
+        cancoder.setPosition(0.0);
         return cancoder.getDeviceID();
 
     }
@@ -131,6 +144,7 @@ public class FalconBuilder {
         config.slot0.kP = this.kP;
         config.slot0.kI = this.kI;
         config.slot0.kD = this.kD;
+        config.slot0.kF = this.kF;
         if( this.inverted ){
             talon.setInverted(InvertType.InvertMotorOutput);
         }
@@ -140,8 +154,9 @@ public class FalconBuilder {
             config.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice();
         }
         else if (sensor == 11){
-            config.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.RemoteSensor0.toFeedbackDevice();
             config.remoteFilter0.remoteSensorDeviceID = cancoderToCanID();
+            config.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.RemoteSensor0.toFeedbackDevice();
+            System.out.println("Setting Sensor to CanCoder");
         }
         else if (sensor == 12){
             config.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.RemoteSensor1.toFeedbackDevice();

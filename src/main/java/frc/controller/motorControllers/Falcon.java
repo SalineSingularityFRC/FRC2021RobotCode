@@ -1,6 +1,7 @@
 package frc.controller.motorControllers;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
@@ -8,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.CANCoder;
 
 import frc.controller.MotorController;
 
@@ -62,11 +64,14 @@ public class Falcon implements MotorController {
 
     public void setVelocity(double rpm) { //speed will be from -1.0 to 1.0
         this.talon.set(TalonFXControlMode.Velocity, rpm);
+        //System.out.println("\nMy current value is " + rpm + "\n");
     }
 
     public void setRPMFromStick(double stickValue){ //stickValue will be between -1.0 and 1.0
         double rpm = stickValue * 6380;
-        this.setVelocity(rpm);
+        //this.setVelocity(rpm);
+        this.setSpeed(stickValue);
+        
     }
 
     public void setPosition(double position){ //position is measured in degrees
@@ -101,5 +106,11 @@ public class Falcon implements MotorController {
 
     public WPI_TalonFX getMotorController() {
         return this.talon;
+    }
+
+    public double getFeedbackSensorPos(){
+        return this.talon.getSelectedSensorPosition();
+        
+
     }
 }
