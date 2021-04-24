@@ -110,7 +110,9 @@ public class Falcon implements MotorController {
 
     public double getFeedbackSensorPos(){
         return this.talon.getSelectedSensorPosition();
-        
+    }
 
+    public double getIntegratedSensorPos(){
+        return this.talon.getSensorCollection().getIntegratedSensorPosition();
     }
 }

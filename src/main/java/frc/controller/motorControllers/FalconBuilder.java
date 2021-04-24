@@ -2,6 +2,7 @@ package frc.controller.motorControllers;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.SlotConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
@@ -11,6 +12,8 @@ import com.fasterxml.jackson.databind.util.ArrayBuilders.BooleanBuilder;
 
 import org.json.simple.*;
 import org.json.simple.parser.*;
+
+import frc.robot.Canifier;
 
 
 
@@ -154,6 +157,7 @@ public class FalconBuilder {
             config.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice();
         }
         else if (sensor == 11){
+            config.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
             config.remoteFilter0.remoteSensorDeviceID = cancoderToCanID();
             config.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.RemoteSensor0.toFeedbackDevice();
             System.out.println("Setting Sensor to CanCoder");
@@ -170,7 +174,7 @@ public class FalconBuilder {
         }
         
 
-
+        System.out.println(config);
         talon.setConfiguration(config);
         return talon;
     }

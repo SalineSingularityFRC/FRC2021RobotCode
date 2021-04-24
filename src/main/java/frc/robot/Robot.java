@@ -316,8 +316,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     //SmartDashboard.putNumber("Big Number Gyro Angle", gyro.getAngle());
-
-    System.out.println("\nCurrent Sensor Position: \t" + ((Falcon)motors.get("FL_Angle")).getFeedbackSensorPos());
+    
+    System.out.println("\nFeedback Sensor Position: \t" + ((Falcon)motors.get("FL_Angle")).getFeedbackSensorPos());
+    System.out.println("\nIntegrated Sensor Position: \t" + ((Falcon)motors.get("FL_Angle")).getIntegratedSensorPos());
 
 
     /*
