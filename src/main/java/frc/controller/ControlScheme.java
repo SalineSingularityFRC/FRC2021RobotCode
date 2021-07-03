@@ -34,8 +34,8 @@ public abstract class ControlScheme {
 	public abstract void conveyorFlywheel(Conveyor conveyor, Flywheel flywheel);
 	public abstract void climber(Climber climber);
 	public abstract void climberReset(Climber climber);
-	 public abstract void colorSensor(ColorSensor colorSensor);
-	 public abstract void swerveDrive(SwerveDrive drive);
+	//public abstract void colorSensor(ColorSensor colorSensor);
+	public abstract void swerveDrive(SwerveDrive drive);
 
 	// In addation to defining our various different mechanisms to be expanded upon in subclasses (other controlSchemes, i.e. ArcadeDrive),
 	// various different methods to interact with the gyro are also included in here. Why? I don't know, but they can be accessed anywhere from

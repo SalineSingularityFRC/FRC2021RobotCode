@@ -290,11 +290,11 @@ public class ArcadeDrive extends ControlScheme {
 
     }
 
-    @Override
+    /*@Override
     public void colorSensor(ColorSensor colorSensor) {
         // TODO Auto-generated method stub
 
-    }
+    }*/
 
 }
 

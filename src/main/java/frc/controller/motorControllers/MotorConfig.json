@@ -124,49 +124,7 @@
         "Length": 10,
         "Width": 10
     },
-    "Shooter":{
-        "Motors":[
-            {
-                "Name":"Flywheel1",
-                "Type":"Spark",
-                "CanID":11,
-                "ControlMethod":"Velocity",
-                "PID": {
-                    "kP": 1.00,
-                    "kI": 1.00,
-                    "kD": 1.00
-                },
-                "IsMotorInverted":true
-                
-
-            },
-            {
-                "Name":"Flywheel2",
-                "Type":"Spark",
-                "CanID":12,
-                "ControlMethod":"Velocity",
-                "PID": {
-                    "kP": 1.00,
-                    "kI": 1.00,
-                    "kD": 1.00
-                },
-                "Following":11,
-                "IsMotorInverted":false
-            },
-            {
-                "Name":"FeederMotor",
-                "Type":"Spark",
-                "CanID":8,
-                "ControlMethod":"Velocity",
-                "PID": {
-                    "kP": 1.00,
-                    "kI": 1.00,
-                    "kD": 1.00
-                },
-                "IsMotorInverted":false
-            }
-        ]
-    },
+    
     "Limelight":{
         "kP_Distance": 0.055,
         "kP_Heading": 0.055

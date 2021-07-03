@@ -65,7 +65,7 @@ public class Robot extends TimedRobot {
   Json json = new Json();
 
   String[] motorNames = { "FL_Angle", "FL_Wheel", "BL_Angle", "BL_Wheel", "FR_Angle", "FR_Wheel", "BR_Angle",
-      "BR_Wheel", "Flywheel1", "Flywheel2", "FeederMotor" };
+      "BR_Wheel" };
 
   HashMap<String, MotorController> motors = new HashMap<String, MotorController>();
 

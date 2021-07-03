@@ -105,6 +105,12 @@ public class SwerveDrive  {
 
         m_BR_Angle = new Falcon(mBR_Angle_CAN, .25, false);
         m_BR_Wheel = new Falcon(mBR_Wheel_CAN, .25, true);
+        
+
+        m_FL_Angle.setConfiguration(m_FL_Angle.makeFalconConfig());
+        m_FR_Angle.setConfiguration(m_FR_Angle.makeFalconConfig());
+        m_BL_Angle.setConfiguration(m_BL_Angle.makeFalconConfig());
+        m_BR_Angle.setConfiguration(m_BR_Angle.makeFalconConfig());
 
     }
 
@@ -131,10 +137,24 @@ public class SwerveDrive  {
 
         double rotationSpeedConstant = DEFAULT_ROTATION_SPEED_CONSTANT;
 
-        fl_vectors[0].set(vertical, horizontal);
-        fr_vectors[0].set(vertical, horizontal);
-        bl_vectors[0].set(vertical, horizontal);
-        br_vectors[0].set(vertical, horizontal);
+        SmartDashboard.putNumber("Vertical", vertical);
+        SmartDashboard.putNumber("Horizontal", horizontal);
+        SmartDashboard.putNumber("Rotation", nextRotation);
+
+        Vector[] fl_vectors = new Vector[2];
+        Vector[] fr_vectors = new Vector[2];
+        Vector[] bl_vectors = new Vector[2];
+        Vector[] br_vectors = new Vector[2];
+
+        fl_vectors[0] = new Vector(horizontal, vertical);
+        fr_vectors[0] = new Vector(horizontal, vertical);
+        bl_vectors[0] = new Vector(horizontal, vertical);
+        br_vectors[0] = new Vector(horizontal, vertical);
+
+        fl_vectors[1] = new Vector(0, 0);
+        fr_vectors[1] = new Vector(0, 0);
+        bl_vectors[1] = new Vector(0, 0);
+        br_vectors[1] = new Vector(0, 0);
 
         fl_vectors[1].setAngleDist(Math.toRadians(45), nextRotation);
         fr_vectors[1].setAngleDist(Math.toRadians(45 + 90), nextRotation);
@@ -146,15 +166,28 @@ public class SwerveDrive  {
         Vector blTotal = Vector.add(bl_vectors[0], bl_vectors[1]);
         Vector brTotal = Vector.add(br_vectors[0], br_vectors[1]);
 
-        m_FL_Angle.setPosition( Math.toDegrees(flTotal.getAngle()) + gyroRotation + 258.398 + 0);
-        m_FR_Angle.setPosition( Math.toDegrees(frTotal.getAngle()) + gyroRotation + 53.086 + 180);
-        m_BL_Angle.setPosition( Math.toDegrees(blTotal.getAngle()) + gyroRotation + 123.486 + 0);
-        m_BR_Angle.setPosition( Math.toDegrees(brTotal.getAngle()) + gyroRotation + 218.848 - 180);
+        SmartDashboard.putNumber("FL Angle Vector", Math.toDegrees(flTotal.getAngle()));
 
-        m_FL_Wheel.setRPMFromStick(flTotal.getDistance() * 5000);
-        m_FR_Wheel.setRPMFromStick(frTotal.getDistance() * 5000);
-        m_BL_Wheel.setRPMFromStick(blTotal.getDistance() * 5000);
-        m_BR_Wheel.setRPMFromStick(brTotal.getDistance() * 5000);
+        m_FL_Angle.setPosition( Math.toDegrees(flTotal.getAngle()) * (2048 * 12.8) / 360);
+        m_FR_Angle.setPosition( Math.toDegrees(frTotal.getAngle()) * (2048 * 12.8) / 360);
+        m_BL_Angle.setPosition( Math.toDegrees(blTotal.getAngle()) * (2048 * 12.8) / 360);
+        m_BR_Angle.setPosition( Math.toDegrees(brTotal.getAngle()) * (2048 * 12.8) / 360);
+
+        SmartDashboard.putNumber("FL_Position Target", Math.toDegrees(flTotal.getAngle()) * (2048 * 12.8) / 360);
+        SmartDashboard.putNumber("FR_Position Target", Math.toDegrees(frTotal.getAngle()) * (2048 * 12.8) / 360);
+        SmartDashboard.putNumber("BL_Position Target", Math.toDegrees(blTotal.getAngle()) * (2048 * 12.8) / 360);
+        SmartDashboard.putNumber("BR_Position Target", Math.toDegrees(brTotal.getAngle()) * (2048 * 12.8) / 360);
+
+        SmartDashboard.putNumber("FL_Position Actual", m_FL_Angle.getFeedbackSensorPos());
+        SmartDashboard.putNumber("FR_Position Actual", m_FR_Angle.getFeedbackSensorPos());
+        SmartDashboard.putNumber("BL_Position Actual", m_BL_Angle.getFeedbackSensorPos());
+        SmartDashboard.putNumber("BR_Position Actual", m_BR_Angle.getFeedbackSensorPos());
+
+
+        m_FL_Wheel.setRPMFromStick(flTotal.getDistance() / 2);
+        m_FR_Wheel.setRPMFromStick(frTotal.getDistance() / 2);
+        m_BL_Wheel.setRPMFromStick(blTotal.getDistance() / 2);
+        m_BR_Wheel.setRPMFromStick(brTotal.getDistance() / 2);
 
 
 
