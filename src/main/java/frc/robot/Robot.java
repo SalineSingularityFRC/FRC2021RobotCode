@@ -60,6 +60,8 @@ public class Robot extends TimedRobot {
   // Declaration of our driving scheme, which can be initialized to
   // any ControlScheme in robotInit()
   ControlScheme currentScheme;
+
+  //TalonFX motor = new TalonFX(53);
   
 
   Json json = new Json();
@@ -77,6 +79,9 @@ public class Robot extends TimedRobot {
   Flywheel flywheel;
   // Conveyor conveyor;
   // Climber climber;
+
+  XboxController driveController;
+  XboxController armController;
 
   // Creates an all-knowing limelight
   LimeLight limeLight; // or CitrusSight?
@@ -140,6 +145,13 @@ public class Robot extends TimedRobot {
     // smartDrive = new SmartBasicDrive(driveLeft1, driveLeft2, driveLeft3,
     // driveRight1, driveRight2, driveRight3);
 
+    driveController = new XboxController(XBOX_PORT);
+    armController = new XboxController(XBOX_PORT + 1);
+
+    drive = new SwerveDrive(57, 58, 55, 56, 51, 52, 53, 54, 41, 43, 44, 42, 1, 1, 1, 1);
+
+
+
     /*
      * talon1 = new Falcon(1, .25, true); talon2 = new Falcon(2, .25, true); talon3
      * = new Falcon(3, .25, true); talon4 = new Falcon(4, .25, true);
@@ -163,6 +175,9 @@ public class Robot extends TimedRobot {
         
       }
     }
+
+    
+    
 
 
 
@@ -303,8 +318,8 @@ public class Robot extends TimedRobot {
   //Stuff to run when teleop is selected
   @Override
   public void teleopInit() {
-    //drive.setInitialPosition();
-    //Falcon talon = new Falcon(3);
+     
+    
     
 
 
@@ -319,6 +334,10 @@ public class Robot extends TimedRobot {
     
     System.out.println("\nFeedback Sensor Position: \t" + ((Falcon)motors.get("FL_Angle")).getFeedbackSensorPos());
     System.out.println("\nIntegrated Sensor Position: \t" + ((Falcon)motors.get("FL_Angle")).getIntegratedSensorPos());
+
+    drive.swerveDrive(driveController.getLS_Y(), driveController.getLS_X(), driveController.getRS_X(), gyro.getAngle());
+
+    
 
 
     /*

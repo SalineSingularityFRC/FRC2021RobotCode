@@ -45,6 +45,23 @@ public class Falcon implements MotorController {
         return tempConfig;
     }
 
+    public void makeSteeringMotorConfig(){
+        int canTimeouts = 20;
+        // Wipe configuration
+        talon.configFactoryDefault();
+        talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, canTimeouts);
+        // Make the integrated encoder count forever (don't wrap), since it doesn't work properly with continuous mode
+        // We account for this manually (unfortunately)
+        talon.configFeedbackNotContinuous(true, canTimeouts);
+        // Configure PID values
+        talon.config_kP(0, 0.3, canTimeouts);
+        talon.config_kI(0, 0.0, canTimeouts);
+        talon.config_kD(0, 0.0, canTimeouts);
+        // Limit steering module speed
+        talon.configPeakOutputForward(.75, canTimeouts);
+        talon.configPeakOutputReverse(-.75, canTimeouts);
+      }
+
     public TalonFXConfiguration makeFalconConfig() {
         TalonFXConfiguration newConfig = new TalonFXConfiguration();
         newConfig.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
@@ -88,11 +105,13 @@ public class Falcon implements MotorController {
     }
 
     public void setPosition(double position) { // position is measured in degrees
-        // position /= 360;
-        // position *= 2048; //2048 is the number of ticks of the encoder (to our best
+        position /= 360;
+        position *= 2048; //2048 is the number of ticks of the encoder (to our best
         // estimate, most likely true)
+        position *= 12.8;
         
-        this.talon.set(TalonFXControlMode.Position, position); // position here is measured in encoder ticks
+        this.talon.set(TalonFXControlMode.Position, position); // position here is measured in encoder ticks, 
+        // adjusted for the gearing ratio
 
     }
 

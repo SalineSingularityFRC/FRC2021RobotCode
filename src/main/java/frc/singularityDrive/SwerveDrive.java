@@ -82,18 +82,7 @@ public class SwerveDrive  {
     Vector[] br_vectors = new Vector[2];
 
     
-
-    
-
-
-    
-
-    
-    
-
-    
-
-    public SwerveDrive( int mFL_Angle_CAN, int mFL_Wheel_CAN, int mFR_Angle_CAN, int mFR_Wheel_CAN, int mBL_Angle_CAN, int mBL_Wheel_CAN, int mBR_Angle_CAN, int mBR_Wheel_CAN, double slowSpeedConstant, double normalSpeedConstant, double fastSpeedConstant, double rotationSpeedConstant){
+    public SwerveDrive( int mFL_Angle_CAN, int mFL_Wheel_CAN, int mFR_Angle_CAN, int mFR_Wheel_CAN, int mBL_Angle_CAN, int mBL_Wheel_CAN, int mBR_Angle_CAN, int mBR_Wheel_CAN, int FL_CanCoder, int FR_CanCoder, int BL_CanCoder, int BR_CanCoder, double slowSpeedConstant, double normalSpeedConstant, double fastSpeedConstant, double rotationSpeedConstant){
         m_FL_Angle = new Falcon(mFL_Angle_CAN, .25, false);
         m_FL_Wheel = new Falcon(mFL_Wheel_CAN, .25, true);
 
@@ -107,12 +96,19 @@ public class SwerveDrive  {
         m_BR_Wheel = new Falcon(mBR_Wheel_CAN, .25, true);
         
 
-        m_FL_Angle.setConfiguration(m_FL_Angle.makeFalconConfig());
+        /*m_FL_Angle.setConfiguration(m_FL_Angle.makeFalconConfig());
         m_FR_Angle.setConfiguration(m_FR_Angle.makeFalconConfig());
         m_BL_Angle.setConfiguration(m_BL_Angle.makeFalconConfig());
-        m_BR_Angle.setConfiguration(m_BR_Angle.makeFalconConfig());
+        m_BR_Angle.setConfiguration(m_BR_Angle.makeFalconConfig());*/
 
+        m_FL_Angle.makeSteeringMotorConfig();
+        m_FR_Angle.makeSteeringMotorConfig();
+        m_BL_Angle.makeSteeringMotorConfig();
+        m_BR_Angle.makeSteeringMotorConfig();
+        
     }
+
+    
 
 
     /**
@@ -141,15 +137,27 @@ public class SwerveDrive  {
         SmartDashboard.putNumber("Horizontal", horizontal);
         SmartDashboard.putNumber("Rotation", nextRotation);
 
+        //Vectors[0] is thetranslation vector
+        //Vectors[1] is the rotation vector
         Vector[] fl_vectors = new Vector[2];
         Vector[] fr_vectors = new Vector[2];
         Vector[] bl_vectors = new Vector[2];
         Vector[] br_vectors = new Vector[2];
 
-        fl_vectors[0] = new Vector(horizontal, vertical);
-        fr_vectors[0] = new Vector(horizontal, vertical);
-        bl_vectors[0] = new Vector(horizontal, vertical);
-        br_vectors[0] = new Vector(horizontal, vertical);
+        Vector fl = new Vector(horizontal, vertical);
+        Vector fr = new Vector(horizontal, vertical);
+        Vector bl = new Vector(horizontal, vertical);
+        Vector br = new Vector(horizontal, vertical);
+
+        fl_vectors[0] = new Vector();
+        fr_vectors[0] = new Vector();
+        bl_vectors[0] = new Vector();
+        br_vectors[0] = new Vector();
+
+        fl_vectors[0].setAngleDist(fl.getAngle(), fl.getDistance());
+        fr_vectors[0].setAngleDist(fr.getAngle(), fr.getDistance());
+        bl_vectors[0].setAngleDist(bl.getAngle(), bl.getDistance());
+        br_vectors[0].setAngleDist(br.getAngle(), br.getDistance());
 
         fl_vectors[1] = new Vector(0, 0);
         fr_vectors[1] = new Vector(0, 0);
@@ -166,12 +174,14 @@ public class SwerveDrive  {
         Vector blTotal = Vector.add(bl_vectors[0], bl_vectors[1]);
         Vector brTotal = Vector.add(br_vectors[0], br_vectors[1]);
 
+
+
         SmartDashboard.putNumber("FL Angle Vector", Math.toDegrees(flTotal.getAngle()));
 
-        m_FL_Angle.setPosition( Math.toDegrees(flTotal.getAngle()) * (2048 * 12.8) / 360);
-        m_FR_Angle.setPosition( Math.toDegrees(frTotal.getAngle()) * (2048 * 12.8) / 360);
-        m_BL_Angle.setPosition( Math.toDegrees(blTotal.getAngle()) * (2048 * 12.8) / 360);
-        m_BR_Angle.setPosition( Math.toDegrees(brTotal.getAngle()) * (2048 * 12.8) / 360);
+        m_FL_Angle.setPosition( Math.toDegrees(flTotal.getAngle()));
+        m_FR_Angle.setPosition( Math.toDegrees(frTotal.getAngle()));
+        m_BL_Angle.setPosition( Math.toDegrees(blTotal.getAngle()));
+        m_BR_Angle.setPosition( Math.toDegrees(brTotal.getAngle()));
 
         SmartDashboard.putNumber("FL_Position Target", Math.toDegrees(flTotal.getAngle()) * (2048 * 12.8) / 360);
         SmartDashboard.putNumber("FR_Position Target", Math.toDegrees(frTotal.getAngle()) * (2048 * 12.8) / 360);
