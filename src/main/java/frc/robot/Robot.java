@@ -148,7 +148,7 @@ public class Robot extends TimedRobot {
     driveController = new XboxController(XBOX_PORT);
     armController = new XboxController(XBOX_PORT + 1);
 
-    drive = new SwerveDrive(57, 58, 55, 56, 51, 52, 53, 54, 41, 43, 44, 42, 1, 1, 1, 1);
+    drive = new SwerveDrive(57, 58, 55, 56, 51, 52, 53, 54, 41, 43, 44, 42, 1.0, 1.0, 1.0, 1.0);
 
 
 
@@ -181,10 +181,20 @@ public class Robot extends TimedRobot {
 
 
 
-    
+    //numbers are cancoder ID's
     if(json.isObject("SwerveDrive")){
-      drive = new SwerveDrive(motors.get("FL_Angle").getCanID(), motors.get("FL_Wheel").getCanID(), motors.get("FR_Angle").getCanID(), motors.get("FR_Wheel").getCanID(), 
-        motors.get("BL_Angle").getCanID(), motors.get("BL_Wheel").getCanID(), motors.get("BR_Angle").getCanID(), motors.get("BR_Wheel").getCanID(), 1, 1, 1, 1);
+      drive = new SwerveDrive(
+        motors.get("FL_Angle").getCanID(), 
+        motors.get("FL_Wheel").getCanID(), 
+        motors.get("FR_Angle").getCanID(), 
+        motors.get("FR_Wheel").getCanID(), 
+        motors.get("BL_Angle").getCanID(), 
+        motors.get("BL_Wheel").getCanID(), 
+        motors.get("BR_Angle").getCanID(), 
+        motors.get("BR_Wheel").getCanID(),
+        41, 43, 
+        44, 42,
+        1, 1, 1, 1);
     }
     //drive = new BasicDrive(driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3);
     // ^^^^^^^ change this to SmartBasicDrive if using SmartDrive

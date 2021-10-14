@@ -82,7 +82,13 @@ public class SwerveDrive  {
     Vector[] br_vectors = new Vector[2];
 
     
-    public SwerveDrive( int mFL_Angle_CAN, int mFL_Wheel_CAN, int mFR_Angle_CAN, int mFR_Wheel_CAN, int mBL_Angle_CAN, int mBL_Wheel_CAN, int mBR_Angle_CAN, int mBR_Wheel_CAN, int FL_CanCoder, int FR_CanCoder, int BL_CanCoder, int BR_CanCoder, double slowSpeedConstant, double normalSpeedConstant, double fastSpeedConstant, double rotationSpeedConstant){
+    public SwerveDrive( int mFL_Angle_CAN, int mFL_Wheel_CAN, 
+            int mFR_Angle_CAN, int mFR_Wheel_CAN, 
+            int mBL_Angle_CAN, int mBL_Wheel_CAN, 
+            int mBR_Angle_CAN, int mBR_Wheel_CAN, 
+            int FL_CanCoder, int FR_CanCoder, 
+            int BL_CanCoder, int BR_CanCoder, 
+            double slowSpeedConstant, double normalSpeedConstant, double fastSpeedConstant, double rotationSpeedConstant){
         m_FL_Angle = new Falcon(mFL_Angle_CAN, .25, false);
         m_FL_Wheel = new Falcon(mFL_Wheel_CAN, .25, true);
 
@@ -144,6 +150,7 @@ public class SwerveDrive  {
         Vector[] bl_vectors = new Vector[2];
         Vector[] br_vectors = new Vector[2];
 
+        //Intermediate vectors for changing angle
         Vector fl = new Vector(horizontal, vertical);
         Vector fr = new Vector(horizontal, vertical);
         Vector bl = new Vector(horizontal, vertical);
@@ -154,10 +161,10 @@ public class SwerveDrive  {
         bl_vectors[0] = new Vector();
         br_vectors[0] = new Vector();
 
-        fl_vectors[0].setAngleDist(fl.getAngle(), fl.getDistance());
-        fr_vectors[0].setAngleDist(fr.getAngle(), fr.getDistance());
-        bl_vectors[0].setAngleDist(bl.getAngle(), bl.getDistance());
-        br_vectors[0].setAngleDist(br.getAngle(), br.getDistance());
+        fl_vectors[0].setAngleDist(fl.getAngle() + gyroRotation, fl.getDistance());
+        fr_vectors[0].setAngleDist(fr.getAngle() + gyroRotation, fr.getDistance());
+        bl_vectors[0].setAngleDist(bl.getAngle() + gyroRotation, bl.getDistance());
+        br_vectors[0].setAngleDist(br.getAngle() + gyroRotation, br.getDistance());
 
         fl_vectors[1] = new Vector(0, 0);
         fr_vectors[1] = new Vector(0, 0);
