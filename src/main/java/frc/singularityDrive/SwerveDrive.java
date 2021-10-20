@@ -3,7 +3,9 @@ package frc.singularityDrive;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+    
 import frc.controller.MotorController;
+import frc.controller.motorControllers.Falcon;
 import frc.controller.motorControllers.Spark;
 import frc.controller.controlSchemes.*;
 import frc.robot.LimeLight;
@@ -14,14 +16,15 @@ import frc.controller.ControlScheme;
 
 public class SwerveDrive  {
 
-    protected Spark m_front_left_Wheel, m_front_right_Wheel, m_back_left_Wheel, m_back_right_Wheel;
-    protected Spark m_front_left_Angle, m_front_right_Angle, m_back_left_Angle,  m_back_right_Angle;
+    //protected Spark m_front_left_Wheel, m_front_right_Wheel, m_back_left_Wheel, m_back_right_Wheel;
+    //protected Spark m_front_left_Angle, m_front_right_Angle, m_back_left_Angle,  m_back_right_Angle;
 
     protected final static boolean DEFAULT_TO_BRUSHLESS = true;
 
     protected final static double DEFAULT_SLOW_SPEED_CONSTANT = 0.4;
 	protected final static double DEFAULT_NORMAL_SPEED_CONSTANT = 0.8;
-	protected final static double DEFAULT_FAST_SPEED_CONSTANT = 1.0;
+    protected final static double DEFAULT_FAST_SPEED_CONSTANT = 1.0;
+    protected final static double DEFAULT_ROTATION_SPEED_CONSTANT = 1.0;
     protected final static double smartMotionMaxRPM = 5700;
     
     protected double velocityMultiplier;
@@ -54,47 +57,65 @@ public class SwerveDrive  {
     // public abstract void arcadeDrive(double vertical, double rotation, double
     // horizontal, boolean poweredInputs, SpeedMode speedMode);
 
+
+    Falcon m_FL_Angle;
+    Falcon m_FL_Wheel;
+
+    Falcon m_FR_Angle;
+    Falcon m_FR_Wheel;
+    
+    Falcon m_BL_Angle;
+    Falcon m_BL_Wheel;
+    
+    Falcon m_BR_Angle;
+    Falcon m_BR_Wheel;
+
+
     private static double distance(double x1, double y1, double x2, double y2) {
         return (Math.sqrt((Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2))));
     }
 
-    
 
-    private static double getAngleIfStill(double xNext, double yNext, double xCurr, double yCurr, double height, double width, double angleAdd, double localToGlobal){
-        if(xNext == xCurr && yNext == yCurr){ //check to see if robot is stationary
-            return Math.toDegrees(Math.atan(width / height)) + angleAdd;
-        }
-        else{ //if the robot isn't stationary
-            if(xNext < 0){
-                return Math.toDegrees(Math.atan((yNext - yCurr) / (xNext - xCurr)) - localToGlobal) + 180;
-            }
-            else if(xNext > 0){
-                return Math.toDegrees(Math.atan((yNext - yCurr) / (xNext - xCurr))  - localToGlobal);
-            }
-            else{ //xNext == 0
-                if(yNext < 0){
-                        return 270;
-                }
-                else{
-                        return 90;
-                }
-                
-            }
-            //return Math.toDegrees(Math.atan((yNext - yCurr) / (xNext - xCurr)));
-                
-        }
-    }
-    
+    Vector[] fl_vectors = new Vector[2];
+    Vector[] fr_vectors = new Vector[2];
+    Vector[] bl_vectors = new Vector[2];
+    Vector[] br_vectors = new Vector[2];
 
-    private static double getDistanceIfStill(double xNext, double yNext, double xCurr, double yCurr, double rotationSpeed ){
-        if(xNext == xCurr && yNext == yCurr){
-                return rotationSpeed;
-        }
-        else{
-                return distance(xNext, yNext, xCurr, yCurr);
-        }
+    
+    public SwerveDrive( int mFL_Angle_CAN, int mFL_Wheel_CAN, 
+            int mFR_Angle_CAN, int mFR_Wheel_CAN, 
+            int mBL_Angle_CAN, int mBL_Wheel_CAN, 
+            int mBR_Angle_CAN, int mBR_Wheel_CAN, 
+            int FL_CanCoder, int FR_CanCoder, 
+            int BL_CanCoder, int BR_CanCoder, 
+            double slowSpeedConstant, double normalSpeedConstant, double fastSpeedConstant, double rotationSpeedConstant){
+        m_FL_Angle = new Falcon(mFL_Angle_CAN, .25, false);
+        m_FL_Wheel = new Falcon(mFL_Wheel_CAN, .25, true);
+
+        m_FR_Angle = new Falcon(mFR_Angle_CAN, .25, false);
+        m_FR_Wheel = new Falcon(mFR_Wheel_CAN, .25, true);
+
+        m_BL_Angle = new Falcon(mBL_Angle_CAN, .25, false);
+        m_BL_Wheel = new Falcon(mBL_Wheel_CAN, .25, true);
+
+        m_BR_Angle = new Falcon(mBR_Angle_CAN, .25, false);
+        m_BR_Wheel = new Falcon(mBR_Wheel_CAN, .25, true);
+        
+
+        /*m_FL_Angle.setConfiguration(m_FL_Angle.makeFalconConfig());
+        m_FR_Angle.setConfiguration(m_FR_Angle.makeFalconConfig());
+        m_BL_Angle.setConfiguration(m_BL_Angle.makeFalconConfig());
+        m_BR_Angle.setConfiguration(m_BR_Angle.makeFalconConfig());*/
+
+        m_FL_Angle.makeSteeringMotorConfig();
+        m_FR_Angle.makeSteeringMotorConfig();
+        m_BL_Angle.makeSteeringMotorConfig();
+        m_BR_Angle.makeSteeringMotorConfig();
         
     }
+
+    
+
 
     /**
      * 
@@ -111,120 +132,104 @@ public class SwerveDrive  {
      * 
      */
 
-    public SwerveDrive(double vertical, double horizontal, double rotation, double slowSpeedConstant,
-            double normalSpeedConstant, double fastSpeedCostant, double rotationSpeedConstant) {
-        double size = 1.0;
+    public void swerveDrive(double vertical, double horizontal, double nextRotation, double gyroRotation) {
+        //double size = 1.0;
 
-        double robotWidth = 18;
-        double robotHeight = 16.5;
+        double rotation = gyroRotation + nextRotation;
 
-        double halfRobotWidth = robotWidth / 2;
-        double halfRobotHeight = robotHeight / 2;
+        double rotationSpeedConstant = DEFAULT_ROTATION_SPEED_CONSTANT;
 
-        double midToOutSize = distance(halfRobotWidth, halfRobotHeight, 0, 0); // distance between robot center and any
-                                                                               // of the wheels
+        SmartDashboard.putNumber("Vertical", vertical);
+        SmartDashboard.putNumber("Horizontal", horizontal);
+        SmartDashboard.putNumber("Rotation", nextRotation);
 
-        double mFL_XPos_Curr = -halfRobotWidth;
-        double mFL_YPos_Curr = halfRobotHeight;
+        //Vectors[0] is thetranslation vector
+        //Vectors[1] is the rotation vector
+        Vector[] fl_vectors = new Vector[2];
+        Vector[] fr_vectors = new Vector[2];
+        Vector[] bl_vectors = new Vector[2];
+        Vector[] br_vectors = new Vector[2];
 
-        double mFR_XPos_Curr = halfRobotWidth;
-        double mFR_YPos_Curr = halfRobotHeight;
+        //Intermediate vectors for changing angle
+        Vector fl = new Vector(horizontal, vertical);
+        Vector fr = new Vector(horizontal, vertical);
+        Vector bl = new Vector(horizontal, vertical);
+        Vector br = new Vector(horizontal, vertical);
 
-        double mBL_XPos_Curr = -halfRobotWidth;
-        double mBL_YPos_Curr = -halfRobotHeight;
+        fl_vectors[0] = new Vector();
+        fr_vectors[0] = new Vector();
+        bl_vectors[0] = new Vector();
+        br_vectors[0] = new Vector();
 
-        double mBR_XPos_Curr = halfRobotWidth;
-        double mBR_YPos_Curr = -halfRobotHeight;
+        fl_vectors[0].setAngleDist(fl.getAngle() + gyroRotation, fl.getDistance());
+        fr_vectors[0].setAngleDist(fr.getAngle() + gyroRotation, fr.getDistance());
+        bl_vectors[0].setAngleDist(bl.getAngle() + gyroRotation, bl.getDistance());
+        br_vectors[0].setAngleDist(br.getAngle() + gyroRotation, br.getDistance());
 
-        double mBR_Offset_Angle = Math.atan(robotHeight / robotWidth); // Angle for offsetting wheel positions along the
-                                                                       // circle with radius midToOutSize
-        double mFR_Offset_Angle = -mBR_Offset_Angle; // " " but negative
-        double mFL_Offset_Angle = mBR_Offset_Angle + Math.PI; // complement ( +180 degrees ) of the first one
-        double mBL_Offset_Angle = mFR_Offset_Angle + Math.PI; // same thing, but of the second one
+        fl_vectors[1] = new Vector(0, 0);
+        fr_vectors[1] = new Vector(0, 0);
+        bl_vectors[1] = new Vector(0, 0);
+        br_vectors[1] = new Vector(0, 0);
 
-        double mFL_XPos_Next = horizontal
-                + (midToOutSize * Math.cos(-(rotation * rotationSpeedConstant) - mFL_Offset_Angle));
-        double mFL_YPos_Next = vertical
-                + (midToOutSize * Math.sin(-(rotation * rotationSpeedConstant) - mFL_Offset_Angle));
+        fl_vectors[1].setAngleDist(Math.toRadians(45), nextRotation);
+        fr_vectors[1].setAngleDist(Math.toRadians(45 + 90), nextRotation);
+        bl_vectors[1].setAngleDist(Math.toRadians(45 + 180), nextRotation);
+        br_vectors[1].setAngleDist(Math.toRadians(45 + 270), nextRotation);
 
-        double mFR_XPos_Next = horizontal
-                + (midToOutSize * Math.cos(-(rotation * rotationSpeedConstant) - mFR_Offset_Angle));
-        double mFR_YPos_Next = vertical
-                + (midToOutSize * Math.sin(-(rotation * rotationSpeedConstant) - mFR_Offset_Angle));
+        Vector flTotal = Vector.add(fl_vectors[0], fl_vectors[1]);
+        Vector frTotal = Vector.add(fr_vectors[0], fr_vectors[1]);
+        Vector blTotal = Vector.add(bl_vectors[0], bl_vectors[1]);
+        Vector brTotal = Vector.add(br_vectors[0], br_vectors[1]);
 
-        double mBL_XPos_Next = horizontal
-                + (midToOutSize * Math.cos(-(rotation * rotationSpeedConstant) - mBL_Offset_Angle));
-        double mBL_YPos_Next = vertical
-                + (midToOutSize * Math.sin(-(rotation * rotationSpeedConstant) - mBL_Offset_Angle));
 
-        double mBR_XPos_Next = horizontal
-                + (midToOutSize * Math.cos(-(rotation * rotationSpeedConstant) - mBR_Offset_Angle));
-        double mBR_YPos_Next = vertical
-                + (midToOutSize * Math.sin(-(rotation * rotationSpeedConstant) - mBR_Offset_Angle));
 
-        // Angle adjusting motors will set the wheels to be pointed to the angle of
-        // these slopes:
-        double mFL_Angle = getAngleIfStill(horizontal, vertical, 0, 0, robotWidth, robotHeight, 180, 0);
-        double mFR_Angle = getAngleIfStill(horizontal, vertical, 0, 0, robotHeight, robotWidth, 90, 0);
-        double mBL_Angle = getAngleIfStill(horizontal, vertical, 0, 0, robotHeight, robotWidth, 270, 0);
-        double mBR_Angle = getAngleIfStill(horizontal, vertical, 0, 0, robotWidth, robotHeight, 0, 0);
+        SmartDashboard.putNumber("FL Angle Vector", Math.toDegrees(flTotal.getAngle()));
 
-        double mFR_Distance = getDistanceIfStill(mFR_XPos_Curr, mFR_YPos_Curr, mFR_XPos_Next, mFR_YPos_Next, 1);
-        double mFL_Distance = getDistanceIfStill(mFL_XPos_Curr, mFL_YPos_Curr, mFL_XPos_Next, mFL_YPos_Next, 1);
-        double mBL_Distance = getDistanceIfStill(mBL_XPos_Curr, mBL_YPos_Curr, mBL_XPos_Next, mBL_YPos_Next, 1);
-        double mBR_Distance = getDistanceIfStill(mBR_XPos_Curr, mBR_YPos_Curr, mBR_XPos_Next, mBR_YPos_Next, 1);
+        m_FL_Angle.setPosition( Math.toDegrees(flTotal.getAngle()));
+        m_FR_Angle.setPosition( Math.toDegrees(frTotal.getAngle()));
+        m_BL_Angle.setPosition( Math.toDegrees(blTotal.getAngle()));
+        m_BR_Angle.setPosition( Math.toDegrees(brTotal.getAngle()));
 
-        System.out.printf(String.format("%.3f %n", mFL_Angle));
-        System.out.printf(String.format("%.3f %n", mBL_Angle));
-        System.out.printf(String.format("%.3f %n", mBL_Angle));
-        System.out.printf(String.format("%.3f %n %n", mFR_Angle));
+        SmartDashboard.putNumber("FL_Position Target", Math.toDegrees(flTotal.getAngle()) * (2048 * 12.8) / 360);
+        SmartDashboard.putNumber("FR_Position Target", Math.toDegrees(frTotal.getAngle()) * (2048 * 12.8) / 360);
+        SmartDashboard.putNumber("BL_Position Target", Math.toDegrees(blTotal.getAngle()) * (2048 * 12.8) / 360);
+        SmartDashboard.putNumber("BR_Position Target", Math.toDegrees(brTotal.getAngle()) * (2048 * 12.8) / 360);
 
-        // System.out.printf(String.format("Value with 3 digits after decimal point %.3f
-        // %n", PI)); // OUTPUTS: Value with 3 digits after decimal point 3.142
+        SmartDashboard.putNumber("FL_Position Actual", m_FL_Angle.getFeedbackSensorPos());
+        SmartDashboard.putNumber("FR_Position Actual", m_FR_Angle.getFeedbackSensorPos());
+        SmartDashboard.putNumber("BL_Position Actual", m_BL_Angle.getFeedbackSensorPos());
+        SmartDashboard.putNumber("BR_Position Actual", m_BR_Angle.getFeedbackSensorPos());
 
-        System.out.printf(String.format("%.3f %n", mFL_Distance));
-        System.out.printf(String.format("%.3f %n", mFR_Distance));
-        System.out.printf(String.format("%.3f %n", mBL_Distance));
-        System.out.printf(String.format("%.3f %n %n", mBL_Distance));
 
-        // System.out.printf(String.format("%.3f %n" , mFL_XPos_Next));
-        // System.out.printf(String.format("%.3f %n" , mFL_YPos_Next));
+        m_FL_Wheel.setRPMFromStick(flTotal.getDistance() / 2);
+        m_FR_Wheel.setRPMFromStick(frTotal.getDistance() / 2);
+        m_BL_Wheel.setRPMFromStick(blTotal.getDistance() / 2);
+        m_BR_Wheel.setRPMFromStick(brTotal.getDistance() / 2);
 
-        System.out.println(String.format("(%.3f , %.3f) %n %n", mFL_XPos_Next, mFL_YPos_Next));
 
-        // System.out.printf(String.format("%.3f %n" , mFR_XPos_Next));
-        // System.out.printf(String.format("%.3f %n", mFR_YPos_Next));
-
-        System.out.println(String.format("(%.3f , %.3f) %n %n", mFR_XPos_Next, mFR_YPos_Next));
-
-        // System.out.printf(String.format("%.3f %n" , mBL_XPos_Next));
-        // System.out.printf(String.format("%.3f %n" , mBL_YPos_Next));
-
-        System.out.println(String.format("(%.3f , %.3f) %n %n", mBL_XPos_Next, mBL_YPos_Next));
-
-        // System.out.printf(String.format("%.3f %n" , mBR_XPos_Next));
-        // System.out.printf(String.format("%.3f %n" , mBR_YPos_Next));
-
-        System.out.println(String.format("(%.3f , %.3f) %n %n", mBR_XPos_Next, mBR_YPos_Next));
 
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         // SwerveDrive sDrive = new SwerveDrive(1, 1, 0.7853982, 1, 1, 1, 1);
-        SwerveDrive sDrive = new SwerveDrive(1, 1, .5, 1, 1, 1, 1);
+        //SwerveDrive sDrive = new SwerveDrive(1, 1, 0.5235988, 1, 1, 1, 1, 1);
 
-        System.out.println("/n/n/n/n");
-        System.out.println(gyroWheelCompensate(10, -5));
-        System.out.println(gyroWheelCompensate(-15, 45));
 
-    }
+        //System.out.println("/n/n/n/n");
+        //System.out.println(gyroWheelCompensate(10, -5));
+        //System.out.println(gyroWheelCompensate(-15, 45));
 
+    }*/
+
+    //We think this is handled in getAngleIfStill
+    //handles wheel rotation as the robot spins
     private static double gyroWheelCompensate(double gyroAngle, double targetWheelAngle) {
         double gyroDiff = gyroAngle - initialGyroAngle; // Differance between current and initial gyro angles
         return targetWheelAngle - gyroDiff;
 
     }
 
+    //Figures out which direction to turn based on where we are and where we want our angle to be
     private static double angleCalculator(double currentAngle, double futureAngle) {
         if (currentAngle < 0 || currentAngle > 360 || futureAngle < 0 || futureAngle > 360) {
             return -1;
@@ -240,6 +245,7 @@ public class SwerveDrive  {
     }
 
     //@param voltage: likely be using resistance based encoders that give a voltage between .1 and 5V
+    //Shouldn't need this, not using resistance encoders
     private static double voltageToAngle(double voltage){
         if(voltage > 5 || voltage < .1 ) {
             return -1;

@@ -10,16 +10,21 @@ import frc.robot.Flywheel;
 import frc.robot.LimeLight;
 import frc.singularityDrive.SingDrive;
 import frc.singularityDrive.SmartSingDrive;
+import frc.singularityDrive.SwerveDrive;
 import frc.singularityDrive.SingDrive.SpeedMode;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
 
 //Uncomment to enable gyro stuff
-//import com.kauailabs.navx.frc.AHRS;
+import com.kauailabs.navx.frc.AHRS;
 
 /**
  * 
  * Main class to control the robot
+ * Use only if using swerve drive or old power-based driving with sparks
+ * For using sparks with velocity, use SmartArcadeDrive
  * 
  */
 public class ArcadeDrive extends ControlScheme {
@@ -40,6 +45,8 @@ public class ArcadeDrive extends ControlScheme {
     final double angleDifferencekP = 0.011;
     final double endDistance = 2.0;
 
+    AHRS gyro;
+
     /**
      * 
      * @param driveControllerPort Controller port the drive controller is connected to, probably 0
@@ -49,13 +56,18 @@ public class ArcadeDrive extends ControlScheme {
         driveController = new XboxController(driveControllerPort);
         armController = new XboxController(armControllerPort);
 
-        lowGear = true;
+        /*lowGear = true;
         climberExtended = false;
-        speedMode = SpeedMode.SLOW;
+        speedMode = SpeedMode.SLOW;*/
 
     }
 
-    public void colorSensor(ColorSensor colorSensor){
+    public void initGyro(){
+        gyro = new AHRS(SPI.Port.kMXP);
+    
+    }
+
+    /*public void colorSensor(ColorSensor colorSensor){
         if(armController.getPOVUp()) {
             colorSensor.spinColorWheelColor();
             colorSensor.resetCount(false);
@@ -87,54 +99,73 @@ public class ArcadeDrive extends ControlScheme {
         else if(armController.getBackButton()) {
             colorSensor.retract();
         }
+    }*/
+
+    public double smooshGyroAngle(double gyroAngle) {
+
+        if (gyroAngle <= 360 && gyroAngle >= 0) {
+            return gyroAngle;
+        }
+
+        gyroAngle /= 360;
+        gyroAngle -= (int) gyroAngle;
+        gyroAngle *= 360;
+
+        if (gyroAngle < 0) {
+            gyroAngle += 360;
+        }
+
+        return gyroAngle;
+
     }
 
     /**
      * Drives arcade drive
      * 
      */
-    public void drive(SingDrive drive, DrivePneumatics pneumatics) {
+    public void swerveDrive(SwerveDrive drive) {
         //Switch speed mode object, set to low with left bumber and high with right bumper
-        if(driveController.getLB()) {
+        /*if(driveController.getLB()) {
             speedMode = SpeedMode.SLOW;
         }
 
         else if(driveController.getRB()) {
             speedMode = SpeedMode.FAST;
-        }
+        }*/
 
         //Put current speedMode on SmartDashboard
-        SmartDashboard.putString("Speed Mode", "" + speedMode);
+        //SmartDashboard.putString("Speed Mode", "" + speedMode);
 
 
         //Change physical pneumatic gearing with the start button (high gear) and back button (low gear).
         //This sets a boolean lowGear
-        if(driveController.getStartButton()) {
+        /*if(driveController.getStartButton()) {
             lowGear = false;
         }
 
         else if(driveController.getBackButton()) {
             lowGear = true;
-        }
+        }*/
 
         // lowGear is used to actually set the drive pneumatics to intended value.
-        if(lowGear) {
+        /*if(lowGear) {
             pneumatics.setLow();
         }
 
         else {
             pneumatics.setHigh();
-        }
+        }*/
 
         //
         //IMPORTANT
         //
         //The only line actually needed to drive - takes in control sticks, speed mode, and drives based on BasicDrive.
-        drive.arcadeDrive(driveController.getLS_Y(), driveController.getRS_X(), 0.0, true, speedMode);
-        SmartDashboard.putNumber("Encoder Position", drive.getCurrentPosition());
+        drive.swerveDrive(driveController.getRS_Y(), driveController.getRS_X(), 
+            driveController.getLS_X(), 
+            smooshGyroAngle(gyro.getAngle()));
 
         // Use the d-pad/POV hat on the gamepad to drive the robot slowly in any direction for precise adjustments.
-        if(driveController.getPOVLeft()) {
+        /*if(driveController.getPOVLeft()) {
             drive.arcadeDrive(0, -0.1, 0.0, false, SpeedMode.FAST);
         }
         else if (driveController.getPOVRight()) {
@@ -145,7 +176,7 @@ public class ArcadeDrive extends ControlScheme {
         }
         else if (driveController.getPOVUp()) {
             drive.arcadeDrive(0.1, 0, 0.0, false, SpeedMode.FAST);
-        }
+        }*/
 
     }
 
@@ -252,6 +283,18 @@ public class ArcadeDrive extends ControlScheme {
         }
         
     }
+
+    @Override
+    public void drive(SingDrive drive, DrivePneumatics pneumatics) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*@Override
+    public void colorSensor(ColorSensor colorSensor) {
+        // TODO Auto-generated method stub
+
+    }*/
 
 }
 

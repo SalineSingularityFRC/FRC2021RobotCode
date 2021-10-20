@@ -12,10 +12,14 @@ import frc.controller.*;
 import frc.singularityDrive.*;
 import frc.controller.controlSchemes.ArcadeDrive;
 import frc.controller.controlSchemes.SmartArcadeDrive;
+import frc.controller.motorControllers.Falcon;
 import frc.controller.autonomous.*;
 //import frc.controller.controlSchemes.Test;
 import frc.robot.Canifier;
+import frc.robot.Json;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.*;
 
 import edu.wpi.first.wpilibj.Compressor;
@@ -26,6 +30,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.rmi.NoSuchObjectException;
+import java.util.HashMap;
+import org.json.simple.*;
+import org.json.simple.parser.*;
+import com.kauailabs.navx.frc.AHRS;
+
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -35,91 +46,169 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends TimedRobot {
 
-  //stores the motor controller IDs
+  // stores the motor controller IDs
   int driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3;
   int drivePneu1, drivePneu2;
   int colorSol1, colorSol2;
-  int  climberSol1, climberSol2;
+  int climberSol1, climberSol2;
   int colorSpinner;
-  
+
   int flywheelMotor1, flywheelMotor2, flywheelMotor3;
   int conveyorMotor1, conveyorMotor2;
   int downMotorPort;
 
-  //Declaration of our driving scheme, which can be initialized to
-  //any ControlScheme in robotInit()
+  // Declaration of our driving scheme, which can be initialized to
+  // any ControlScheme in robotInit()
   ControlScheme currentScheme;
 
-  //Declaration of mechanisms
-  SingDrive drive;
-  SmartSingDrive smartDrive; //if we want to use smart motion, change this to SmartSingDrive
-  DrivePneumatics drivePneumatics;
-  Flywheel flywheel;
-  Conveyor conveyor;
-  Climber climber;
-
-  //Creates an all-knowing limelight
-  LimeLight limeLight;  // or CitrusSight?
-
-  //Create a CANifier
-  Canifier canifier;
-
-  //Create a ColorSensor
-  ColorSensor colorSensor;
-
-  //Create a gyro
-  AHRS gyro;
-  boolean gyroResetAtTeleop;
-
-  //Compressor compressor;
-  Compressor compressor;
-
-  //SendableChoosers
-  SendableChooser<Integer> goalChooser;
-  SendableChooser<Integer> positionChooser;
-  SendableChooser<Integer> secondaryChooser;
+  //TalonFX motor = new TalonFX(53);
   
-  //SendableChooser autoChooser;  
+
+  Json json = new Json();
+
+  String[] motorNames = { "FL_Angle", "FL_Wheel", "BL_Angle", "BL_Wheel", "FR_Angle", "FR_Wheel", "BR_Angle",
+      "BR_Wheel" };
+
+  HashMap<String, MotorController> motors = new HashMap<String, MotorController>();
+
+  // Declaration of mechanisms
+  SwerveDrive drive;
+  // SmartSingDrive smartDrive; //if we want to use smart motion, change this to
+  // SmartSingDrive
+  // DrivePneumatics drivePneumatics;
+  Flywheel flywheel;
+  // Conveyor conveyor;
+  // Climber climber;
+
+  XboxController driveController;
+  XboxController armController;
+
+  // Creates an all-knowing limelight
+  LimeLight limeLight; // or CitrusSight?
+
+  // Create a CANifier
+  // Canifier canifier;
+
+  // Create a ColorSensor
+  // ColorSensor colorSensor;
+
+  // Create a gyro
+  AHRS gyro;
+  // boolean gyroResetAtTeleop;
 
 
-  //default ports of certain joysticks in DriverStation
+  // Compressor compressor;
+  // Compressor compressor;
+
+  /*
+   * Falcon talon1; Falcon talon2; Falcon talon3; Falcon talon4;
+   * 
+   * Falcon talon5; Falcon talon6; Falcon talon7; Falcon talon8;
+   */
+
+  // SendableChoosers
+  // SendableChooser<Integer> goalChooser;
+  // SendableChooser<Integer> positionChooser;
+  // SendableChooser<Integer> secondaryChooser;
+
+  // SendableChooser autoChooser;
+
+  // default ports of certain joysticks in DriverStation
   final int XBOX_PORT = 0;
-	final int BIG_JOYSTICK_PORT = 1;
+  final int BIG_JOYSTICK_PORT = 1;
   final int SMALL_JOYSTICK_PORT = 2;
 
-
   /**
-   * This function is run when the robot is first started up and should be
-   * used for any initialization code.
+   * This function is run when the robot is first started up and should be used
+   * for any initialization code.
    */
   @Override
   public void robotInit() {
-    //TODO un-comment methods
-    //initialize motor controller ports IDs
-    //Uncomment to initialize motor controllers aswell - commented for texting purposes
+    // TODO un-comment methods
+    // initialize motor controller ports IDs
+    // Uncomment to initialize motor controllers aswell - commented for texting
+    // purposes
     setDefaultProperties();
-    CameraServer.getInstance().startAutomaticCapture();
-    CameraServer.getInstance().startAutomaticCapture();
+    // CameraServer.getInstance().startAutomaticCapture();
+    // CameraServer.getInstance().startAutomaticCapture();
 
-    //initialize our driving scheme to a basic arcade drive
-    currentScheme = new SmartArcadeDrive(XBOX_PORT, XBOX_PORT +1);
-    
-    gyro = new AHRS(SPI.Port.kMXP);
-    gyroResetAtTeleop = true;
+    // initialize our driving scheme to a basic arcade drive
+    currentScheme = new ArcadeDrive(XBOX_PORT, XBOX_PORT +1);
 
-    //colorSensor = new ColorSensor(colorSpinner, colorSol1, colorSol2);
+    //gyro = new AHRS(SPI.Port.kMXP);
+    ((ArcadeDrive)currentScheme).initGyro();
+    // gyroResetAtTeleop = true;
+
+    // colorSensor = new ColorSensor(colorSpinner, colorSol1, colorSol2);
+
+    // initialize all mechanisms on the robot
+    // smartDrive = new SmartBasicDrive(driveLeft1, driveLeft2, driveLeft3,
+    // driveRight1, driveRight2, driveRight3);
+
+    driveController = new XboxController(XBOX_PORT);
+    armController = new XboxController(XBOX_PORT + 1);
+
+    drive = new SwerveDrive(57, 58, 55, 56, 51, 52, 53, 54, 41, 43, 44, 42, 1.0, 1.0, 1.0, 1.0);
+
+
+
+    /*
+     * talon1 = new Falcon(1, .25, true); talon2 = new Falcon(2, .25, true); talon3
+     * = new Falcon(3, .25, true); talon4 = new Falcon(4, .25, true);
+     * 
+     * talon5 = new Falcon(5, .25, true); talon6 = new Falcon(6, .25, true); talon7
+     * = new Falcon(7, .25, true); talon8 = new Falcon(8, .25, true);
+     */
+
+    for (int i = 0; i < motorNames.length; i++) {
+      try {
+        motors.put(motorNames[i], json.getSwerveDriveMotors(motorNames[i]));
+      } catch (NoSuchObjectException e) {
+        
+        //e.printStackTrace();
+        try{
+          motors.put(motorNames[i], json.getShooterMotor(motorNames[i]));
+
+        } catch (NoSuchObjectException f){
+          //e.printStackTrace();
+        }
+        
+      }
+    }
+
     
-    //initialize all mechanisms on the robot
-    smartDrive = new SmartBasicDrive(driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3);
-    drive = new BasicDrive(driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3);
+    
+
+
+
+    //numbers are cancoder ID's
+    if(json.isObject("SwerveDrive")){
+      drive = new SwerveDrive(
+        motors.get("FL_Angle").getCanID(), 
+        motors.get("FL_Wheel").getCanID(), 
+        motors.get("FR_Angle").getCanID(), 
+        motors.get("FR_Wheel").getCanID(), 
+        motors.get("BL_Angle").getCanID(), 
+        motors.get("BL_Wheel").getCanID(), 
+        motors.get("BR_Angle").getCanID(), 
+        motors.get("BR_Wheel").getCanID(),
+        41, 43, 
+        44, 42,
+        1, 1, 1, 1);
+    }
+    //drive = new BasicDrive(driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3);
     // ^^^^^^^ change this to SmartBasicDrive if using SmartDrive
-    drivePneumatics = new DrivePneumatics(drivePneu1, drivePneu2);
-    flywheel = new Flywheel(flywheelMotor1, flywheelMotor2, flywheelMotor3);
-    conveyor = new Conveyor(conveyorMotor1);
+    //drivePneumatics = new DrivePneumatics(drivePneu1, drivePneu2);
+    if(json.isObject("FLywheel")){
+      flywheel = new Flywheel(motors.get("Flywheel1").getCanID(), motors.get("Flywheel2").getCanID(), motors.get("FeederMotor").getCanID());
+      //flywheel = new Flywheel(flywheelMotor1, flywheelMotor2, flywheelMotor3);
+    }
+    
+    //conveyor = new Conveyor(conveyorMotor1);
 
 
 
-    climber = new Climber(downMotorPort,0,0);//TODO THE LAST TWO NUNMBERS AREN'T CORRECT
+    //climber = new Climber(downMotorPort,0,0);//TODO THE LAST TWO NUNMBERS AREN'T CORRECT
 
     
     limeLight = new LimeLight();
@@ -139,24 +228,24 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto mode", autoChooser);*/
 
     //compressor = new Compressor();
-    goalChooser = new SendableChooser<Integer>();
-    positionChooser = new SendableChooser<Integer>();
-    secondaryChooser = new SendableChooser<Integer>();
+    //goalChooser = new SendableChooser<Integer>();
+    //positionChooser = new SendableChooser<Integer>();
+    //secondaryChooser = new SendableChooser<Integer>();
 
-    goalChooser.addDefault("Just Move",1);
-    goalChooser.addOption("Target and Trench", 0);
-    goalChooser.addOption("TestAuton", 2);
+    //goalChooser.addDefault("Just Move",1);
+    //goalChooser.addOption("Target and Trench", 0);
+    //goalChooser.addOption("TestAuton", 2);
 
-    positionChooser.addDefault("Position 1", 0);
-    positionChooser.addOption("Position 2", 1);
-    positionChooser.addOption("Position 3", 2);
+    //positionChooser.addDefault("Position 1", 0);
+    //positionChooser.addOption("Position 2", 1);
+    //positionChooser.addOption("Position 3", 2);
 
-    secondaryChooser.addDefault("Move Through Trench", 1);
-    secondaryChooser.addOption("Don't", 0);
+    //secondaryChooser.addDefault("Move Through Trench", 1);
+    //secondaryChooser.addOption("Don't", 0);
 
-    SmartDashboard.putData("Position", positionChooser);
-    SmartDashboard.putData("Primary Goal", goalChooser);
-    SmartDashboard.putData("Secondary Goal", secondaryChooser);
+    //SmartDashboard.putData("Position", positionChooser);
+    //SmartDashboard.putData("Primary Goal", goalChooser);
+    //SmartDashboard.putData("Secondary Goal", secondaryChooser);
   }
 
   /**
@@ -170,7 +259,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
-    compressor.start();
+    //compressor.start();
+    //Falcon talon = new Falcon(3);
+    
+
 
   }
 
@@ -194,7 +286,7 @@ public class Robot extends TimedRobot {
     //secondaryGoals
     //  0: Move through Trench
     //  1: Don't
-   AutonControlScheme[] goals={ new Trench1(drive, limeLight, flywheel, conveyor),
+   /*AutonControlScheme[] goals={ new Trench1(drive, limeLight, flywheel, conveyor),
                                  new Trench2(drive, limeLight, flywheel, conveyor),
                                  new Trench3(drive, limeLight, flywheel, conveyor)};
     
@@ -236,7 +328,11 @@ public class Robot extends TimedRobot {
   //Stuff to run when teleop is selected
   @Override
   public void teleopInit() {
-    //drive.setInitialPosition();
+     
+    
+    
+
+
   }
 
   /**
@@ -244,7 +340,26 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putNumber("Big Number Gyro Angle", gyro.getAngle());
+    //SmartDashboard.putNumber("Big Number Gyro Angle", gyro.getAngle());
+    
+    System.out.println("\nFeedback Sensor Position: \t" + ((Falcon)motors.get("FL_Angle")).getFeedbackSensorPos());
+    System.out.println("\nIntegrated Sensor Position: \t" + ((Falcon)motors.get("FL_Angle")).getIntegratedSensorPos());
+
+    drive.swerveDrive(driveController.getLS_Y(), driveController.getLS_X(), driveController.getRS_X(), gyro.getAngle());
+
+    
+
+
+    /*
+    talon1.setSpeed(100);
+    talon2.setSpeed(100);
+    talon3.setSpeed(100);
+    talon4.setSpeed(100);
+
+    talon5.setSpeed(100);
+    talon6.setSpeed(100);
+    talon7.setSpeed(100);
+    talon8.setSpeed(100);*/
 
     // Allow driver control based on current schem
 /*
@@ -258,19 +373,20 @@ public class Robot extends TimedRobot {
     SmartDashboard.putString("Byte Transfered: ", byteString);
 */  
     //colorSensor.spinColorWheelColor(2);
-    currentScheme.colorSensor(colorSensor);
+    //currentScheme.colorSensor(colorSensor);
 
     //SmartDashboard.putNumber("EncoderPosition", drive.getCurrentPosition());
-    currentScheme.smartDrive(smartDrive, drivePneumatics);
+    //currentScheme.smartDrive(smartDrive, drivePneumatics);
     // partial autonomy via vision
-    currentScheme.ledMode(limeLight);
+    //currentScheme.ledMode(limeLight);
     //control other various mechanisms
-    currentScheme.limeLightDrive(limeLight, smartDrive, false);
-    currentScheme.conveyorFlywheel(conveyor, flywheel);
-    currentScheme.climber(climber);
+    //currentScheme.limeLightDrive(limeLight, smartDrive, false);
+    //currentScheme.conveyorFlywheel(conveyor, flywheel);
+    //currentScheme.climber(climber);
     
-    SmartDashboard.getNumber("EncoderPosition", smartDrive.getCurrentPosition());
-    SmartDashboard.getNumber("Gyro Position", gyro.getAngle());
+    //SmartDashboard.getNumber("EncoderPosition", smartDrive.getCurrentPosition());
+    currentScheme.swerveDrive(drive);
+    //SmartDashboard.getNumber("Gyro Position", gyro.getAngle());
 
   }
 
@@ -279,8 +395,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    compressor.start();
-    currentScheme.climberReset(climber);
+    //compressor.start();
+    //currentScheme.climberReset(climber);
   }
 
   

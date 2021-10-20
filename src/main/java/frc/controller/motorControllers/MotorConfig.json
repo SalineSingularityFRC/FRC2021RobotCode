@@ -1,0 +1,166 @@
+{
+    "SwerveDrive": {
+        "Motors": [
+            {
+                "Name": "FL_Angle",
+                "ControlMethod": "Angle",
+                "Type": "Falcon",
+                "CanID":57,
+                "Coast":false,
+                "CanCoderID":43,
+                "SensorType":11,
+                "PID": {
+                    "kP": 0.20,
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 1.00
+                }
+            },
+            {
+                "Name": "FL_Wheel",
+                "Type": "Falcon",
+                "CanID":58,
+                "SensorType":1,
+                "PID": {
+                    "kP": 1.00,
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 0.00
+                }
+            },
+            {
+                "Name": "FR_Angle",
+                "ControlMethod": "Angle",
+                "Type": "Falcon",
+                "CanID":55,
+                "Coast":false,
+                "CanCoderID":41,
+                "SensorType":11,
+                "PID": {
+                    "kP": 0.20,
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 1.00
+                }
+            },
+            {
+                "Name": "FR_Wheel",
+                "Type": "Falcon",
+                "CanID":56,
+                "SensorType":1,
+                "PID": {
+                    "kP": 1.00,
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 0.00
+                }
+
+            },
+            {
+                "Name": "BL_Angle",
+                "ControlMethod": "Angle",
+                "Type": "Falcon",
+                "CanID":51,
+                "Coast":false,
+                "CanCoderID":44,
+                "SensorType":11,
+                "PID": {
+                    "kP": 0.20,
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 1.00
+                }
+            },
+            {
+                "Name": "BL_Wheel",
+                "Type": "Falcon",
+                "CanID":52,
+                "SensorType":1,
+                "PID": {
+                    "kP": 1.00,
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 0.00
+                }
+            },
+            {
+                "Name": "BR_Angle",
+                "ControlMethod": "Angle",
+                "Type": "Falcon",
+                "CanID":53,
+                "Coast":false,
+                "CanCoderID":42,
+                "SensorType":11,
+                "PID": {
+                    "kP": 0.20,
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 1.00
+                }
+            },
+            {
+                "Name": "BR_Wheel",
+                "Type": "Falcon",
+                "CanID":54,
+                "SensorType":1,
+                "PID": {
+                    "kP": 1.00,
+                    "kI": 0.00,
+                    "kD": 0.00,
+                    "kF": 0.00
+                }
+
+            }
+        ],
+        "Speeds":{
+            "Slow":0.3,
+            "Normal": 1.0,
+            "Fast": 1.3
+        }
+
+        
+    },
+    "Chassis": {
+        "Length": 10,
+        "Width": 10
+    },
+    
+    "Limelight":{
+        "kP_Distance": 0.055,
+        "kP_Heading": 0.055
+    },
+    "DefaultConfig": {
+        "Falcon": {
+            "CanID": 0,
+            "IsMotorInverted": false,
+            "ControlMethod": "Rotations",
+            "PID": {
+                "kP": 1.00,
+                "kI": 1.00,
+                "kD": 1.00,
+                "kF": 1.00
+            },
+            "Following":-1,
+            "Coast":true,
+            "RampRate": 0.25,
+            "SensorType":1,
+            "LimitStateNO":true,
+            "CanCoderID":-1,
+            "Limit":false
+
+        },
+        "Spark": {
+            "CanID": 0,
+            "IsMotorInverted": false,
+            "ControlMethod": "Rotations",
+            "PID": {
+                "kP": 1.00,
+                "kI": 1.00,
+                "kD": 1.00
+            },
+            "Following":-1,
+            "Coast":true
+        }
+        
+    }
+}
