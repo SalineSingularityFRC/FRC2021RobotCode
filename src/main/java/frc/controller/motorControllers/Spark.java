@@ -22,6 +22,8 @@ public class Spark implements MotorController {
     // Declare a single CANSparkMax motor controller.
     private CANSparkMax m_motor;
 
+    private int canID;
+
     private CANEncoder m_encoder;
     private CANPIDController m_pidController;
 
@@ -47,6 +49,7 @@ public class Spark implements MotorController {
     public Spark(int portNumber, boolean brushlessMotor, double rampRate) {
 
         MotorType type;
+        this.canID = portNumber;
 
 
         //Setting motor to either brushed or brushless
@@ -404,5 +407,11 @@ public class Spark implements MotorController {
     m_pidController.setSmartMotionMinOutputVelocity(minVel, slot);
     m_pidController.setSmartMotionMaxAccel(maxAcc, slot);
     m_pidController.setSmartMotionAllowedClosedLoopError(allowedErr, slot);
+    }
+
+    @Override
+    public int getCanID() {
+        // TODO Auto-generated method stub
+        return this.canID;
     }
 }
